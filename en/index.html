@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Winning the Agent Ad Gateway</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,400..900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#ffffff; --surface:#ffffff; --soft:#f5f5f7; --soft2:#ebebee; --ink:#121212; --muted:#62666d; --line:#e4e4e8;
+  --accent:#00858a; --accent-soft:#e2f6f6; --hot:#e8174a; --hot-soft:#ffe9ee; --warn:#9a5b00; --warn-soft:#fdf1dc;
+  --good:#1a7f4b; --bar:#c5ccd3; --glow:transparent; --glow2:transparent;
+  --night:#000000; --night-2:#141416; --night-ink:#ffffff; --night-muted:#a1a1a6; --night-line:rgba(255,255,255,.14);
+  --cyan:#25f4ee; --red:#fe2c55;
+  --f-display:"TikTok Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-body:"TikTok Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-num:"TikTok Sans","Noto Sans SC",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0a0b; --surface:#121214; --soft:#18181b; --soft2:#232327; --ink:#f4f4f5; --muted:#a1a1aa; --line:#2a2a2f;
+  --accent:#25f4ee; --accent-soft:#0d2a2a; --hot:#fe2c55; --hot-soft:#3a0f1a; --warn:#ffb648; --warn-soft:#33250e;
+  --good:#5be3a0; --bar:#3a3f46; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0a0b; --surface:#121214; --soft:#18181b; --soft2:#232327; --ink:#f4f4f5; --muted:#a1a1aa; --line:#2a2a2f;
+  --accent:#25f4ee; --accent-soft:#0d2a2a; --hot:#fe2c55; --hot-soft:#3a0f1a; --warn:#ffb648; --warn-soft:#33250e;
+  --good:#5be3a0; --bar:#3a3f46; color-scheme:dark}
+*{box-sizing:border-box}
+
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 64px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+@media (max-width:960px){.wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px}}
+/* rail */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:40px;max-height:100vh;overflow:auto}
+.rail .lab{font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;font-size:13.5px}
+.rail a{display:block;padding:5px 10px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none;line-height:1.45}
+.rail a:hover,.rail a:focus-visible{color:var(--ink);border-color:var(--ink)}
+.rail a.on{color:var(--accent);border-color:var(--accent);font-weight:500}
+.rail .grp{margin-top:12px;font-size:11.5px;color:var(--muted);padding-left:12px;letter-spacing:.08em}
+@media (max-width:960px){
+  .rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0;max-height:none;border-bottom:1px solid var(--line);margin-inline:-16px;padding-inline:16px}
+  .rail .lab,.rail .grp{display:none}
+  .rail ol{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none}
+  .rail a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;padding:6px 8px}
+  .rail a.on{border-color:var(--accent)}
+}
+main{min-width:0}
+/* hero */
+.hero{padding-block:56px 32px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12.5px;letter-spacing:.14em;color:var(--accent);font-weight:500}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(30px,5vw,48px);line-height:1.2;margin:12px 0 16px;text-wrap:balance}
+.lede{font-size:17.5px;color:var(--muted);max-width:44em;margin:0}
+.meta{margin-top:18px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
+@media (max-width:720px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);padding:16px 18px;display:grid;gap:4px;align-content:start}
+.kpi b{font-family:var(--f-num);font-size:clamp(22px,3vw,30px);font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted);line-height:1.5}
+/* sections */
+section{padding-block:48px 8px;scroll-margin-top:56px}
+.part{font-family:var(--f-num);font-size:12px;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+h2{font-family:var(--f-display);font-weight:900;font-size:clamp(24px,3.2vw,32px);line-height:1.3;margin:0 0 14px;text-wrap:balance}
+h3{font-size:18.5px;font-weight:700;margin:32px 0 10px;text-wrap:balance}
+p{margin:0 0 14px;max-width:46em}
+.thesis{font-size:18px;font-weight:500;border-left:3px solid var(--accent);padding-left:16px;margin:4px 0 20px;max-width:44em}
+.note{font-size:13.5px;color:var(--muted)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);vertical-align:2px;white-space:nowrap}
+.tag.est{background:var(--warn-soft);color:var(--warn)}
+.tag.rw{background:var(--accent-soft);color:var(--accent)}
+.tag.hot{background:var(--hot-soft);color:var(--hot)}
+.implication{background:var(--accent-soft);padding:14px 18px;margin:20px 0;max-width:46em}
+.implication strong{color:var(--accent)}
+/* lists */
+ol.num{counter-reset:n;list-style:none;padding:0;margin:0 0 16px;display:grid;gap:14px;max-width:46em}
+ol.num>li{counter-increment:n;display:grid;grid-template-columns:32px minmax(0,1fr);gap:4px}
+ol.num>li::before{content:counter(n);font-family:var(--f-num);font-weight:700;color:var(--accent);font-size:15px;line-height:1.75}
+ul.plain{padding-left:1.2em;margin:0 0 16px;max-width:46em}
+ul.plain li{margin-bottom:6px}
+/* tables */
+.tbl{overflow-x:auto;margin:12px 0 20px;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-weight:500;color:var(--muted);font-size:12.5px;background:var(--soft);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* figure */
+figure{margin:20px 0 24px;background:var(--surface);border:1px solid var(--line);padding:18px 18px 14px}
+figcaption{font-size:15px;font-weight:700;margin-bottom:4px}
+figure .sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+figure .src{font-size:12px;color:var(--muted);margin-top:10px}
+.scroll{overflow-x:auto}
+svg text{font-family:var(--f-body)}
+/* range bars */
+.rows{display:grid;gap:10px}
+.rrow{display:grid;grid-template-columns:110px minmax(0,1fr) 112px;gap:12px;align-items:center;font-size:13.5px}
+@media (max-width:520px){.rrow{grid-template-columns:76px minmax(0,1fr) 92px;font-size:12.5px}}
+.track{position:relative;height:16px;background:var(--soft)}
+.track .rng{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.85}
+.track .pt{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--accent)}
+.rrow .v{font-family:var(--f-num);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.axis{display:grid;grid-template-columns:110px minmax(0,1fr) 112px;gap:12px;font-family:var(--f-num);font-size:11px;color:var(--muted)}
+@media (max-width:520px){.axis{grid-template-columns:76px minmax(0,1fr) 92px}}
+.axis .ticks{position:relative;height:16px}
+.axis .ticks span{position:absolute;transform:translateX(-50%)}
+/* layer stack */
+.stack{display:grid;gap:6px}
+.layer{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.2fr);gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--line);background:var(--surface)}
+.layer .k{font-weight:700}
+.layer .k small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.layer .d{font-size:13.5px;color:var(--muted)}
+.layer .e{font-size:13px}
+.layer.base{border-color:var(--accent);background:var(--accent-soft)}
+@media (max-width:640px){.layer{grid-template-columns:minmax(0,1fr)}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;font-size:13.5px}
+.flow span{border:1px solid var(--line);background:var(--surface);padding:6px 10px}
+.flow i{font-style:normal;color:var(--muted)}
+/* trend chips */
+.trend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.trend{grid-template-columns:minmax(0,1fr)}}
+.tc{border:1px solid var(--line);background:var(--surface);padding:14px 16px;display:grid;gap:6px;align-content:start}
+.tc .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700}
+.arrow{font-family:var(--f-num);font-size:13px;font-weight:700;white-space:nowrap}
+.up{color:var(--good)} .dn{color:var(--hot)} .fl{color:var(--warn)}
+.tc p{font-size:13.5px;color:var(--muted);margin:0}
+/* matrix 2x2 */
+.m2{display:grid;grid-template-columns:90px minmax(0,1fr) minmax(0,1fr);gap:6px;font-size:13.5px}
+.m2 .ax{font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.m2 .cell{padding:14px;border:1px solid var(--line);background:var(--surface);min-height:110px}
+.m2 .cell b{display:block;margin-bottom:4px}
+.m2 .deep{background:var(--accent-soft);border-color:var(--accent)}
+.m2 .coop{background:var(--hot-soft);border-color:var(--hot)}
+@media (max-width:560px){.m2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.m2 .ax.y{display:none}.m2 .corner{display:none}}
+/* cases */
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.cases{grid-template-columns:minmax(0,1fr)}}
+.case{border:1px solid var(--line);background:var(--surface);padding:16px;display:grid;gap:8px;align-content:start}
+.case .top{display:flex;gap:12px;align-items:baseline}
+.case .rk{font-family:var(--f-num);font-weight:700;color:var(--muted);font-size:13px}
+.case .nm{font-weight:700;font-size:16px}
+.case .big{font-family:var(--f-num);font-size:24px;font-weight:700;color:var(--accent);line-height:1.2}
+.case .big small{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400;margin-left:6px}
+.case p{font-size:13.5px;margin:0;color:var(--muted)}
+.case .how{font-size:13.5px;margin:0;color:var(--ink)}
+.case.feat{border-color:var(--accent)}
+/* dot matrix */
+.dm table td,.dm table th{text-align:center;white-space:nowrap}
+.dm table td:first-child,.dm table th:first-child{text-align:left;white-space:normal;min-width:170px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.dot.o{background:transparent;border:1.5px solid var(--line)}
+/* canva timeline */
+.tl{display:grid;gap:0;border-left:2px solid var(--line);margin-left:6px}
+.tl .it{position:relative;padding:0 0 16px 20px}
+.tl .it::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.tl .dt{font-family:var(--f-num);font-size:12.5px;color:var(--muted)}
+/* analogy */
+.vs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.vs{grid-template-columns:minmax(0,1fr)}}
+.who{border:1px solid var(--line);background:var(--surface);padding:16px;display:grid;gap:6px;align-content:start}
+.who .role{font-size:12px;letter-spacing:.1em}
+.who.win .role{color:var(--good)} .who.lose .role{color:var(--hot)} .who.ref .role{color:var(--warn)}
+.who b{font-size:16px}
+.who p{font-size:13.5px;color:var(--muted);margin:0}
+/* phases */
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.phases{grid-template-columns:minmax(0,1fr)}}
+.ph{border:1px solid var(--line);background:var(--surface);padding:16px}
+.ph.now{border-color:var(--accent);background:var(--accent-soft)}
+.ph .when{font-family:var(--f-num);font-weight:700}
+.ph .what{font-weight:700;margin:2px 0 8px}
+.ph ul{margin:0;padding-left:1.1em;font-size:13.5px}
+/* funnel */
+.fun{display:grid;gap:6px}
+.fs{display:grid;grid-template-columns:110px minmax(0,1fr) 92px;gap:12px;align-items:center;font-size:13.5px}
+.fs .bar{height:22px;background:var(--accent);opacity:.85;min-width:3px}
+.fs .v{font-family:var(--f-num);text-align:right;font-size:12.5px}
+@media (max-width:520px){.fs{grid-template-columns:76px minmax(0,1fr) 72px;font-size:12.5px}}
+/* plays */
+.plays{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 20px}
+@media (max-width:700px){.plays{grid-template-columns:minmax(0,1fr)}}
+.play{border-top:3px solid var(--accent);background:var(--surface);padding:14px 16px;border-inline:1px solid var(--line);border-bottom:1px solid var(--line)}
+.play b{display:block;margin-bottom:4px}
+.play p{font-size:13.5px;color:var(--muted);margin:0}
+/* faq */
+details{border:1px solid var(--line);background:var(--surface);margin-bottom:8px}
+summary{cursor:pointer;padding:12px 16px;font-weight:500;list-style-position:inside}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+details>div{padding:0 16px 14px;font-size:14.5px}
+details p,details ol{max-width:none}
+.src-list{font-size:13.5px;columns:2;column-gap:32px;padding-left:1.1em}
+@media (max-width:700px){.src-list{columns:1}}
+.src-list li{break-inside:avoid;margin-bottom:6px}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+
+/* takeaways */
+.takeaways{padding-top:56px}
+.tk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
+@media (max-width:760px){.tk-grid{grid-template-columns:minmax(0,1fr)}}
+.tk{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 22px 20px;display:grid;gap:8px;align-content:start;min-width:0}
+.tk::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--accent),transparent)}
+.tk.hot::before{background:linear-gradient(90deg,var(--hot),transparent)}
+.tk-n{font-family:var(--f-num);font-weight:700;font-size:44px;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+.tk.hot .tk-n{-webkit-text-stroke-color:var(--hot)}
+.tk h3{margin:4px 0 2px;font-family:var(--f-display);font-weight:900;font-size:21px;line-height:1.4}
+.tk p{font-size:14.5px;color:var(--muted);margin:0;max-width:none}
+/* built-in agent scenes */
+.scenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:6px 0 10px}
+@media (max-width:760px){.scenes{grid-template-columns:minmax(0,1fr)}}
+.scene{background:var(--surface);border:1px solid var(--line);padding:16px 18px;display:grid;gap:6px;align-content:start;min-width:0}
+.scene .who-tag{font-family:var(--f-num);font-size:11.5px;letter-spacing:.12em;color:var(--accent)}
+.scene b{font-size:16px;line-height:1.5}
+.scene p{font-size:14px;color:var(--muted);margin:0;max-width:none}
+footer{border-top:0;position:relative}
+footer::before{content:"";position:absolute;top:0;left:0;width:120px;height:2px;background:linear-gradient(90deg,var(--accent),var(--hot))}
+@media (prefers-reduced-motion:reduce){.case,.tc,.who,.ph,.play,.scene{transition:none}.case:hover,.tc:hover,.who:hover,.ph:hover,.play:hover,.scene:hover{transform:none}}
+/* apps demos */
+details.apps{margin:8px 0 20px}
+details.apps>summary{color:var(--accent)}
+.demos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0}
+@media (max-width:760px){.demos{grid-template-columns:minmax(0,1fr)}}
+.demo{min-width:0;display:grid;gap:10px;align-content:start;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
+.demo-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.demo p{font-size:13.5px;margin:0;color:var(--muted)}
+.chat{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.bub.u{justify-self:end;max-width:85%;background:var(--accent-soft);color:var(--ink);font-size:13px;line-height:1.5;padding:8px 12px;border-radius:14px 14px 4px 14px}
+.card{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;font-size:12.5px;background:var(--surface);box-shadow:0 6px 20px -14px var(--accent)}
+.map{position:relative;height:120px;border-radius:8px;background:repeating-linear-gradient(0deg,transparent 0 22px,var(--line) 22px 23px),repeating-linear-gradient(90deg,transparent 0 30px,var(--line) 30px 31px),var(--soft)}
+.map i{position:absolute;font-style:normal;font-family:var(--f-num);font-size:11px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:1px 7px;transform:translate(-50%,-50%)}
+.map i.on{background:var(--hot);color:var(--surface);border-color:var(--hot)}
+.row{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}.row b{color:var(--ink);font-family:var(--f-num)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}.btns span{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px}
+.btns span.pri{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:700}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.li b{font-family:var(--f-num)}.qty{font-family:var(--f-num);border:1px solid var(--line);border-radius:6px;padding:0 6px;color:var(--muted)}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.thumbs i{aspect-ratio:3/4;max-width:100%;border-radius:6px;background:linear-gradient(160deg,var(--warn-soft),var(--hot-soft));border:2px solid transparent}
+.thumbs i.on{border-color:var(--accent)}
+.seg{display:flex;gap:4px}.seg span{font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:1px 8px}.seg span.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:90px;border-bottom:1px solid var(--line)}
+.bars i{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent-soft))}
+
+/* ===== V5 shell ===== */
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 0}
+.shell{max-width:1200px;margin:0 auto;padding-inline:32px}
+@media (max-width:720px){.shell{padding-inline:16px}}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--night) 82%,transparent);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid var(--night-line);color:var(--night-ink)}
+.nav .shell{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--night-ink);box-shadow:-3px 0 0 var(--cyan),3px 0 0 var(--red)}
+.brand span{color:var(--night-muted);font-weight:500}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;overflow-x:auto;scrollbar-width:none}
+.nav a{display:block;padding:7px 14px;border-radius:999px;color:var(--night-muted);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap}
+.nav a:hover,.nav a:focus-visible{color:var(--night-ink);background:rgba(255,255,255,.08)}
+@media (max-width:640px){.brand span{display:none}.nav a{padding:6px 10px;font-size:13px}}
+
+.hero{background:var(--night);color:var(--night-ink);overflow:hidden;position:relative;border-bottom:0;padding:0}
+.hero::before{content:"";position:absolute;width:760px;height:760px;right:-220px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(37,244,238,.16),transparent 62%);pointer-events:none}
+.hero::after{content:"";position:absolute;width:640px;height:640px;right:120px;bottom:-420px;border-radius:50%;background:radial-gradient(circle,rgba(254,44,85,.14),transparent 62%);pointer-events:none}
+.hero .shell{position:relative;z-index:1;padding-block:96px 72px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:960px){.hero .shell{grid-template-columns:minmax(0,1fr);padding-block:64px 48px;gap:40px}}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--night-muted);border:1px solid var(--night-line);border-radius:999px;padding:6px 14px}
+.pill b{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.hero h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,7.4vw,96px);line-height:1.04;letter-spacing:-.035em;margin:24px 0 24px;text-wrap:balance}
+.hero h1 em{font-style:normal;text-shadow:-.035em -.02em 0 var(--cyan),.035em .02em 0 var(--red)}
+.claim{font-size:clamp(19px,2.2vw,24px);font-weight:700;line-height:1.45;margin:0 0 14px;max-width:24em;letter-spacing:-.01em}
+.hero .lede{font-size:16px;color:var(--night-muted);margin:0;max-width:36em}
+.kpi-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--night-line);margin-top:16px}
+@media (max-width:760px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.k{padding:24px 24px 0 0;display:grid;gap:6px;align-content:start;min-width:0}
+.k+.k{padding-left:24px;border-left:1px solid var(--night-line)}
+@media (max-width:760px){.k:nth-child(3){border-left:0;padding-left:0}}
+.k b{font-size:clamp(30px,4vw,48px);font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.k span{font-size:13.5px;color:var(--night-muted);line-height:1.5}
+.k .est{font-size:11px;color:#ffc970;border:1px solid rgba(255,201,112,.4);border-radius:999px;padding:0 7px;margin-left:4px;white-space:nowrap}
+
+/* agent conversation mock */
+.mock{background:var(--night-2);border:1px solid var(--night-line);border-radius:24px;padding:20px;display:grid;gap:12px;font-size:14px;box-shadow:0 40px 100px -40px rgba(37,244,238,.25)}
+.mock-top{display:flex;align-items:center;gap:8px;color:var(--night-muted);font-size:12.5px}
+.mock-top i{width:8px;height:8px;border-radius:50%;background:#3a3a3f}
+.mock-top em{font-style:normal;margin-left:auto}
+.msg-u{justify-self:end;max-width:86%;background:#2a2a2e;color:var(--night-ink);border-radius:18px 18px 4px 18px;padding:10px 14px;line-height:1.55}
+.tool{border:1px solid var(--night-line);border-radius:16px;padding:14px;display:grid;gap:10px;background:#0c0c0e}
+.tool-h{display:flex;align-items:center;gap:10px;font-weight:700}
+.tool-h i{width:26px;height:26px;border-radius:8px;background:#fff;position:relative;flex:none}
+.tool-h i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:#000;box-shadow:-2px 0 0 var(--cyan),2px 0 0 var(--red)}
+.tool-h small{margin-left:auto;font-weight:500;font-size:12px;color:#5be3a0}
+.tool-r{display:flex;justify-content:space-between;gap:12px;color:var(--night-muted);font-size:13px}
+.tool-r b{color:var(--night-ink);font-weight:700;font-variant-numeric:tabular-nums}
+.tool-b{display:flex;gap:8px}
+.tool-b span{border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;border:1px solid var(--night-line);color:var(--night-ink)}
+.tool-b span.pri{background:var(--red);border-color:var(--red)}
+.msg-a{color:var(--night-muted);line-height:1.6;font-size:13.5px}
+
+/* sections */
+.blk{padding-block:112px 120px}
+@media (max-width:720px){.blk{padding-block:72px 80px}}
+.blk.alt{background:var(--soft)}
+.blk-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+.kicker{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.02em;margin-bottom:12px;display:flex;gap:10px;align-items:center}
+.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.blk-h h2{font-family:var(--f-display);font-weight:900;font-size:clamp(34px,5vw,60px);line-height:1.08;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.blk-h p{margin:0;color:var(--muted);font-size:16px;max-width:26em}
+.tiles{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles.big,.tiles.row3{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles.row3 .tile{padding:22px}.tiles.row3 .tile-t{font-size:20px}.tiles.big .tile{padding:22px;min-height:240px}.tiles.big .tile-t{font-size:20px}}
+@media (max-width:560px){.tiles,.tiles.big,.tiles.row3{grid-template-columns:minmax(0,1fr)}.tile,.tiles.big .tile{min-height:150px;gap:16px;padding:22px}.dark .tile{min-height:120px}}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto 1fr auto;gap:28px;min-height:240px;padding:28px;border-radius:24px;background:var(--soft);color:var(--ink);transition:background .25s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+.alt .tile{background:var(--surface)}
+.tile:hover{background:var(--soft2);transform:translateY(-4px)}
+.alt .tile:hover{background:var(--surface);box-shadow:0 24px 60px -32px rgba(0,0,0,.25)}
+.tile:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.tile-n{font-size:15px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile-t,.hero h1,.blk-h h2,.tk2 h3,.claim,.modal-bar b,.modal-body h3,.thesis,figcaption{word-break:keep-all;overflow-wrap:anywhere}
+.tile-t{font-family:var(--f-display);font-size:clamp(22px,2.2vw,27px);font-weight:800;line-height:1.3;letter-spacing:-.02em;text-wrap:balance;align-self:end}
+.tile-go{justify-self:end;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line);color:var(--ink);transition:background .25s,color .25s,border-color .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.tile:hover .tile-go{background:var(--ink);border-color:var(--ink);color:var(--bg);transform:rotate(45deg)}
+.tiles.big .tile{min-height:320px}
+.tiles.big .tile-t{font-size:clamp(24px,2.6vw,32px)}
+.tiles.big .tile:nth-child(1) .tile-n{color:var(--cyan)}
+.tiles.big .tile:nth-child(2) .tile-n{color:var(--red)}
+
+/* takeaways */
+.dark{background:var(--night);color:var(--night-ink)}
+.dark .kicker{color:var(--night-muted)}
+.tk-blk .kicker::before{background:var(--red)}
+.dark .blk-h p{color:var(--night-muted)}
+.tk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--night-line)}
+@media (max-width:820px){.tk-list{grid-template-columns:minmax(0,1fr)}}
+.tk2{padding:40px 40px 44px 0;border-bottom:1px solid var(--night-line);display:grid;gap:14px;align-content:start;min-width:0}
+.tk2:nth-child(even){padding-left:40px;padding-right:0;border-left:1px solid var(--night-line)}
+@media (max-width:820px){.tk2,.tk2:nth-child(even){padding:32px 0;border-left:0}}
+.tk2-n{font-size:15px;font-weight:700;color:var(--cyan);font-variant-numeric:tabular-nums}
+.tk2.hot .tk2-n{color:var(--red)}
+.tk2 h3{font-family:var(--f-display);font-size:clamp(23px,2.4vw,30px);font-weight:800;line-height:1.3;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.tk2 p{margin:0;color:var(--night-muted);font-size:16px;line-height:1.75;max-width:34em}
+.sub-h{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:72px 0 20px}
+.dark .tile{background:var(--night-2);color:var(--night-ink)}
+.tk-blk .tile{min-height:180px}
+.dark .kicker::before{background:var(--cyan)}
+.dark.tk-blk .kicker::before{background:var(--red)}
+.dark .tile:hover{background:#1f1f22}
+.dark .tile-n{color:var(--night-muted)}
+.dark .tile-go{border-color:var(--night-line);color:var(--night-ink)}
+.dark .tile:hover .tile-go{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.dark .tile:focus-visible{outline-color:var(--night-ink)}
+.site-foot{background:var(--night);color:var(--night-muted);border-top:1px solid var(--night-line);font-size:13px}
+.site-foot .shell{padding-block:28px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.linkbtn{all:unset;cursor:pointer;color:var(--night-ink);font-weight:700;border-bottom:1px solid currentColor}
+.linkbtn:focus-visible{outline:2px solid var(--night-ink);outline-offset:3px}
+
+/* modal */
+dialog.modal{width:min(1040px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:0;border-radius:28px;background:var(--bg);color:var(--ink);box-shadow:0 50px 140px -30px rgba(0,0,0,.55);overflow:auto;overscroll-behavior:contain}
+dialog.modal[open]{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+dialog.modal::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.modal-bar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:14px;padding:18px 28px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.modal-n{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.modal-bar b{font-size:20px;font-weight:800;letter-spacing:-.015em;flex:1;min-width:0}
+.x{all:unset;cursor:pointer;width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--ink)}
+.x:hover,.x:focus-visible{background:var(--ink);color:var(--bg)}
+.modal-body{padding:16px 40px 24px}
+.modal-foot{padding:8px 40px 36px}
+.next{all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center;font-weight:700;font-size:15px;padding:12px 20px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.next:hover{opacity:.86}.next:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:640px){dialog.modal{width:100vw;max-width:100vw;max-height:100%;height:100%;border-radius:0}.modal-body{padding:8px 16px 16px}.modal-foot{padding:8px 16px 32px}.modal-bar{padding:12px 16px}.modal-bar b{font-size:17px}}
+
+/* content inside modules: flat, quiet */
+.modal-body h3{font-size:21px;font-weight:800;letter-spacing:-.015em;margin:40px 0 12px}
+.modal-body h3:first-child{margin-top:20px}
+.modal-body p,.modal-body ol.num,.modal-body ul.plain{max-width:44em}
+.thesis{font-size:21px;font-weight:700;line-height:1.5;letter-spacing:-.01em;border:0;padding:0;margin:20px 0 24px;max-width:30em}
+.implication{background:var(--soft);border-radius:16px;padding:18px 22px;box-shadow:none}
+.implication strong{color:var(--ink)}
+.part{display:none}
+figure{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px 24px 18px;box-shadow:none}
+figcaption{font-size:16px;font-weight:800}
+.tbl{border-radius:16px;border:1px solid var(--line)}
+th{background:var(--soft);color:var(--muted);font-weight:700}
+details{border-radius:16px}
+.layer,.tc,.case,.who,.ph,.play,.m2 .cell,.scene,.demo{border-radius:16px;border-color:transparent;background:var(--soft)}
+.layer.base,.m2 .deep{background:var(--accent-soft);border-color:transparent}
+.m2 .coop{background:var(--hot-soft);border-color:transparent}
+.case.feat,.ph.now{background:var(--soft);border:0;box-shadow:inset 0 0 0 2px var(--ink)}
+.case .big{color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.case .rk,.dt,.ph .when,.arrow{font-variant-numeric:tabular-nums}
+.play{box-shadow:none;border:0}
+.flow span{border-radius:999px;border-color:var(--line);background:var(--surface)}
+.track{border-radius:999px;background:var(--soft2)}
+.track .rng{background:var(--accent);opacity:1;border-radius:999px}
+.fs .bar{background:var(--accent);opacity:1;border-radius:0 6px 6px 0}
+.ol-num>li::before,ol.num>li::before{color:var(--ink);font-weight:800}
+.tag{border-radius:999px}
+.chat,.card{border-radius:14px}
+.case:hover,.tc:hover,.who:hover,.ph:hover,.play:hover,.scene:hover{transform:none;box-shadow:none}
+.case.feat:hover,.ph.now:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+footer{display:none}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){.tile,.tile-go{transition:none}.tile:hover{transform:none}dialog.modal[open]{animation:none}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Page navigation"><div class="shell">
+  <div class="brand"><i aria-hidden="true"></i>TikTok for Business<span>· 3P Agent Strategy</span></div>
+  <ul><li><a href="#trends">Industry Trends</a></li><li><a href="#bench">Benchmarks &amp; History</a></li><li><a href="#takeaways">Key Takeaways</a></li></ul>
+</div></nav>
+<header class="hero"><div class="shell">
+  <div>
+    <span class="pill"><b></b>XFN alignment deck · October 2026</span>
+    <h1>Winning the new<br><em>Agent</em> ad gateway</h1>
+    <p class="claim">Mainstream Agents are becoming the new gateway. TikTok should be the first choice inside every Agent.</p>
+    <p class="lede">Advertisers are moving high-frequency work (checking data, diagnosing, making creatives, building campaigns) into general-purpose Agents such as ChatGPT, Gemini, Claude and Doubao, and into the built-in Agents of work software like Canva and Shopify.</p>
+  </div>
+  <div class="kpi-row">
+    <div class="k"><b>1.2B</b><span>ChatGPT weekly actives (2026-09-29)</span></div>
+    <div class="k"><b>7</b><span>ad platforms launched an official MCP within a year; 3 support read and write</span></div>
+    <div class="k"><b>90.7K</b><span>TikTok MCP MAA (end of September 2026)</span></div>
+    <div class="k"><b>11</b><span>Agents cover 90.1% of reachable advertisers and 91.7% of budget<em class="est">Estimate</em></span></div>
+  </div>
+</div></header>
+<main>
+<section class="blk dark" id="trends"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">Part 1</div><h2>Industry Trends</h2></div><p>Six shifts underway. Open any module for the data and cases.</p></div>
+  <div class="tiles row3"><button class="tile" type="button" data-open="m-t1" aria-haspopup="dialog"><span class="tile-n">01</span><span class="tile-t">Work is moving to<wbr> general-purpose Agents</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t2" aria-haspopup="dialog"><span class="tile-n">02</span><span class="tile-t">MCP is now table stakes for ad platforms</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t3" aria-haspopup="dialog"><span class="tile-n">03</span><span class="tile-t">Competition shifts from listing<wbr> to actual usage</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-forms" aria-haspopup="dialog"><span class="tile-n">04</span><span class="tile-t">Six interaction<wbr> patterns inside Agents</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t4" aria-haspopup="dialog"><span class="tile-n">05</span><span class="tile-t">Advertising and<wbr> commerce converge</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-rivals" aria-haspopup="dialog"><span class="tile-n">06</span><span class="tile-t">Peers: most already offer write access</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+<section class="blk dark" id="bench"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">Part 2</div><h2>Benchmarks &amp; History</h2></div><p>Who has already reached scale, and which moment in history looks most like today.</p></div>
+  <div class="tiles big"><button class="tile" type="button" data-open="m-cases" aria-haspopup="dialog"><span class="tile-n">07</span><span class="tile-t">Top 10<wbr> benchmark cases</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-canva" aria-haspopup="dialog"><span class="tile-n">08</span><span class="tile-t">How Canva plays in ChatGPT</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-analogy" aria-haspopup="dialog"><span class="tile-n">09</span><span class="tile-t">Closest historical parallel:<wbr> the search engine era</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+<section class="blk dark tk-blk" id="takeaways"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">Key Takeaways</div><h2>Four key judgments</h2></div><p>Four sentences for leadership, each tied to a concrete action.</p></div>
+  <div class="tk-list"><article class="tk2"><span class="tk2-n">01</span><h3>Agents will be the next "commerce + ads" super gateway</h3><p>Discovery, purchase and ad buying will soon fit into a single conversation. ChatGPT already sells ads while accepting payments, and one Shopify integration reaches every major Agent. TikTok has content, products and ad delivery all in one place, which is the strongest card we hold: connect products, creatives, campaigns and conversion data into Agents together, and be first to make "conversation equals conversion" work.</p></article><article class="tk2"><span class="tk2-n">02</span><h3>Whoever the Agent thinks of first wins</h3><p>Everyone has an MCP now. The deciding factor is whether an Agent finds TikTok first and uses it well. This is SEO for the Agent era: write clear tool descriptions, structure the data, fight hard for launch placement and default recommendations, and run "call hit rate" as the North Star metric.</p></article><article class="tk2"><span class="tk2-n">03</span><h3>Tier Agent partnerships, and land customers in Ads Manager</h3><p>Complete standard integrations with ChatGPT and Gemini first so TikTok can be called; push deep integrations with Claude, Canva, Shopify and Doubao for default recommendations and co-marketing. The Agent proposes plans and drafts; final confirmation, payment and fine-tuning happen back in Ads Manager, so advertiser accounts and data stay on TikTok.</p></article><article class="tk2 hot"><span class="tk2-n">04</span><h3>Ship "one-sentence Skills" for four high-frequency tasks in Q4</h3><p>Few ad platforms today let advertisers launch campaigns directly inside 3P Agents. In Q4, prioritize turning Smart+ campaign creation, creative diagnosis, budget adjustment and weekly report generation into Skills an advertiser can run with one sentence, with spend caps and a second confirmation, measured by write-operation share and task success rate.</p></article></div>
+  <h3 class="sub-h">How to execute</h3>
+  <div class="tiles row3"><button class="tile" type="button" data-open="m-strategy" aria-haspopup="dialog"><span class="tile-n">10</span><span class="tile-t">Strategic thread and four levers</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-china" aria-haspopup="dialog"><span class="tile-n">11</span><span class="tile-t">China cross-border sellers</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-outlook" aria-haspopup="dialog"><span class="tile-n">12</span><span class="tile-t">The next 12–18 months</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+</main>
+<footer class="site-foot"><div class="shell"><span>Author: Vivian (PSO) · Scope: 3P Agents, global, including China cross-border · Data as of 2026-10</span><button class="linkbtn" type="button" data-open="m-method">Methods &amp; sources</button></div></footer>
+<dialog class="modal" id="m-t1" aria-label="Work is moving to general-purpose Agents"><div class="modal-bar"><span class="modal-n">01 / 12</span><b>Work is moving to<wbr> general-purpose Agents</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>Reading reports, diagnosing, producing creatives and building campaigns increasingly start with a one-sentence prompt instead of opening Ads Manager. Most SMBs already use AI: a Constant Contact survey of 1,500+ SMBs across 5 countries in Q1 2026 found 54% already use AI marketing tools and another 27% plan to within the year; the top uses are trend analysis (45%), writing content (44%) and making images (40%).</p>
+<figure>
+<figcaption>Reachable advertisers by Agent: ChatGPT and Canva lead clearly</figcaption>
+<div class="sub">Assumed reach at global launch (advertisers); bars show the 5%–95% range, the tick marks the base case. Agents overlap, so figures cannot be summed.<span class="tag est">Model estimate, not public</span></div>
+<div class="rows" id="reach"></div>
+<div class="axis" style="margin-top:6px"><span></span><div class="ticks" id="reachTicks"></div><span></span></div>
+<div class="src">Denominator: about 16.28M active advertisers who use third-party ad-related Agents; ranges are 5%–95% percentiles across 400 parameter sets.</div>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Agent</th><th>User scale (public)</th><th>Enterprise side (public)</th><th>Relationship to advertisers</th></tr></thead>
+<tbody>
+<tr><td>ChatGPT</td><td class="n">1.2B weekly actives</td><td>1.5M business customers, 7M workplace seats; includes Walmart, Target, Shopify, Etsy</td><td>Everyday tool for SMBs and marketers <span class="tag hot">Own ads</span></td></tr>
+<tr><td>Gemini</td><td class="n">900M monthly actives</td><td>Gemini Enterprise: about 4,200 companies, 8M paid seats</td><td>Reaches users via Workspace, Android, Search; tied to Google Ads <span class="tag hot">Own ads</span></td></tr>
+<tr><td>Claude</td><td>2,000+ Marketplace listings</td><td>Mainly enterprises, agencies and developers</td><td>Analysis and automation use cases; does not sell ads</td></tr>
+<tr><td>Doubao</td><td class="n">382M monthly actives</td><td>SMB merchants and operators</td><td>ByteDance's own Agent; key gateway for cross-border sellers</td></tr>
+<tr><td>WorkBuddy</td><td class="n">20M monthly actives</td><td>Tencent's workplace Agent</td><td>Very high usage frequency in office scenarios</td></tr>
+<tr><td>Canva</td><td>26M monthly uses inside ChatGPT</td><td>LLM referrals are a double-digit share of total traffic</td><td>Closest to creative production; does not sell ads</td></tr>
+<tr><td>Shopify</td><td>—</td><td>Platform for merchants to open and run stores</td><td>Closest to products and budget; does not sell ads</td></tr>
+</tbody>
+</table></div>
+<p><strong>The other gateway is Agents built into work software.</strong> Gartner forecasts that 40% of SaaS applications will embed task-specific Agents (built-in AI assistants that handle specific tasks) in 2026, up from under 5% in 2025. Advertisers will likely call TikTok directly through the built-in Agent of software they use every day.</p>
+<div class="scenes">
+<div class="scene"><div class="who-tag">Scenario 1 · E-commerce seller</div><b>Launch a new product on TikTok with one sentence from the Shopify admin</b><p>A merchant asks Shopify's built-in assistant Sidekick: "How should I promote this new product?" Sidekick pulls inventory, margin and recent sales, then recommends TikTok ads; once the merchant confirms, it calls TikTok directly to build a Smart+ campaign linked to the product catalog, all without leaving the store admin.</p></div>
+<div class="scene"><div class="who-tag">Scenario 2 · Marketer or designer</div><b>Finish a video in Canva, then turn it into a TikTok ad</b><p>After making a 15-second vertical video with Canva AI, a designer says: "Run this on TikTok, $50 a day, for one week to start." The built-in Agent pushes the creative to TikTok, generates an ad draft, and guides the user back to Ads Manager to confirm and go live.</p></div>
+</div>
+<p class="note">These scenarios are extrapolated from current product capabilities; actual features depend on what each platform ships. What both share: advertisers never need to open TikTok specifically, and can launch ads from the software they already use every day. TikTok therefore needs to integrate with these built-in Agents early.</p>
+<p><strong>Interaction won't stay plain-text chat either.</strong> The ChatGPT Apps SDK and MCP Apps already support interactive cards, tables and charts inside a conversation. Strong examples: Zillow shows a draggable listings map in ChatGPT; Instacart generates an editable cart and supports in-chat payment (launched December 2025, the first App to support Instant Checkout); Hex and Amplitude show interactive charts in Claude with switchable dimensions and time ranges, the closest form to ad reporting. On the other side, Google Ask Advisor and Amazon Ads Agent bring conversational capabilities into the ad console. The two forms will converge (author's view).</p>
+<details class="apps">
+<summary>Expand: four benchmark cases of in-chat interactive cards (with mockups)</summary>
+<div>
+<p class="note">Mockups are redrawn from each company's public demos to illustrate the interaction, not actual product screenshots. For official screenshots see <a href="https://techcrunch.com/2025/10/06/openai-launches-apps-inside-of-chatgpt/" target="_blank" rel="noopener">TechCrunch's coverage</a> (Zillow) and the <a href="https://claude.com/blog/interactive-tools-in-claude" target="_blank" rel="noopener">official Claude blog</a> (Hex and others).</p>
+<div class="demos">
+<div class="demo">
+<div class="demo-h"><b>Zillow × ChatGPT</b><span class="tag">Launched 2025-10</span></div>
+<div class="chat"><div class="bub u">Find me a 2-bedroom near Capitol Hill in Seattle under $3,000 a month</div>
+<div class="card"><div class="map"><i style="left:22%;top:38%">$2,750</i><i style="left:55%;top:24%">$2,980</i><i class="on" style="left:68%;top:62%">$2,600</i><i style="left:35%;top:70%">$2,900</i></div>
+<div class="row"><span>2 bd · 1 ba · 82㎡</span><b>$2,600/mo</b></div><div class="btns"><span>View details</span><span>Parking only</span></div></div></div>
+<p><strong>What works:</strong> results appear as a draggable, zoomable map; tap a listing to ask follow-ups without leaving the conversation.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Instacart × ChatGPT</b><span class="tag">Launched 2025-12</span></div>
+<div class="chat"><div class="bub u">BBQ for 6 this weekend, help me get everything I need</div>
+<div class="card"><div class="li"><span>Short ribs 1.5kg</span><span class="qty">− 1 +</span><b>$38.90</b></div><div class="li"><span>Corn × 6</span><span class="qty">− 1 +</span><b>$4.50</b></div><div class="li"><span>BBQ sauce</span><span class="qty">− 1 +</span><b>$3.99</b></div>
+<div class="row"><span>Total (incl. delivery)</span><b>$52.38</b></div><div class="btns"><span class="pri">Confirm &amp; pay</span><span>Change store</span></div></div></div>
+<p><strong>What works:</strong> the first App to support Instant Checkout. The cart is editable and payment happens in the chat after confirmation, taking the user from need to purchase in one flow.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Canva × ChatGPT</b><span class="tag">26M uses in one month</span></div>
+<div class="chat"><div class="bub u">Make a vertical poster for a coffee shop's new fall menu</div>
+<div class="card"><div class="thumbs"><i></i><i class="on"></i><i></i></div><div class="btns"><span class="pri">Edit in Canva</span><span>Try another</span></div></div></div>
+<p><strong>What works:</strong> the chat shows only first-draft thumbnails; picking one sends the user back to Canva to refine and export, routing Agent traffic back to Canva's own product.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Hex, Amplitude × Claude</b><span class="tag">2026-01 MCP Apps</span></div>
+<div class="chat"><div class="bub u">How did conversion rate change by channel last week?</div>
+<div class="card"><div class="seg"><span class="on">7 days</span><span>30 days</span><span>By channel</span></div><div class="bars"><i style="height:46%"></i><i style="height:58%"></i><i style="height:52%"></i><i style="height:71%"></i><i style="height:64%"></i><i style="height:80%"></i><i style="height:76%"></i></div>
+<div class="row"><span>Source: events table · query expandable</span></div></div></div>
+<p><strong>What works:</strong> charts switch time range and dimension in place and cite their data source, the closest form to TikTok ad reporting.</p>
+</div>
+</div>
+<div class="implication"><strong>Reference for TT4B:</strong> ad reports can follow Hex and Amplitude as interactive charts; campaign creation and budget changes can follow Instacart's cart as editable, confirmable cards that also serve as the second confirmation for write operations.</div>
+</div>
+</details>
+<div class="implication"><strong>What it means for TT4B:</strong> wherever advertisers work in an Agent, TikTok must be there. Reports, campaign previews and spend confirmations should all be visual cards, which are also the best vehicle for second confirmation on write operations.</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t2">Next: MCP is now table stakes for ad platforms <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t2" aria-label="MCP is now table stakes for ad platforms"><div class="modal-bar"><span class="modal-n">02 / 12</span><b>MCP is now table stakes for ad platforms</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>The MCP SDK hit 97M monthly downloads (2026-05), with native support in Claude, ChatGPT, Gemini, Copilot Studio and Cursor. In December 2025, MCP moved to the Agentic AI Foundation under the Linux Foundation, and neutral governance put platform concerns to rest.</p>
+<figure>
+<figcaption>7 platforms launched official MCPs within a year; 3 support read and write</figcaption>
+<div class="sub">Dates reflect first public availability, Oct 2025 to Sep 2026</div>
+<div class="scroll"><svg aria-label="Official ad-platform MCP launch timeline" id="mcpTimeline" role="img" style="min-width:600px;width:100%;height:auto" viewbox="0 0 760 330"></svg></div>
+<div class="src">Sources: Markifact, Leapbuzz, platform announcements</div>
+</figure>
+<ul class="plain">
+<li><strong>MCP is no longer a differentiator.</strong> Advertisers can compare Meta and TikTok ROAS in one prompt, so switching costs between platforms drop sharply.</li>
+<li><strong>Write access and safeguards now set platforms apart.</strong> Meta creates every new campaign paused; Amazon rolls multi-step operations into a single command; Snap lets advertisers grant permissions per Agent.</li>
+<li><strong>Other platforms are opening write access.</strong> Meta went GA on July 16 and added Partnership Ads in September; Microsoft and Snap have published write-access roadmaps, with broad availability expected within 6–12 months.</li>
+</ul>
+<div class="implication"><strong>What it means for TT4B:</strong> Write operations should cover the full campaign lifecycle and chain into complete tasks. Earn trust with paused-by-default, spend caps, second confirmation and per-Agent permissions. Then layer partner Skills and vertical solutions on top to offer workflows no one else offers yet. The core metric: write operations as a share of all calls.</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t3">Next: The competition shifts from listing to actual usage <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t3" aria-label="The competition shifts from listing to actual usage"><div class="modal-bar"><span class="modal-n">03 / 12</span><b>The competition shifts from listing<wbr> to actual usage</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="tbl"><table>
+<thead><tr><th>Agent marketplace</th><th>Scale</th><th>Discovery</th></tr></thead>
+<tbody>
+<tr><td>Claude Marketplace</td><td>2,000+ listings (launched 2026-09)</td><td>Application-based listing with manual review; supports MCP and Skills</td></tr>
+<tr><td>ChatGPT plugin directory</td><td>1,624 apps (2026-07)</td><td>Mostly search by name; also recommended in context during chats</td></tr>
+<tr><td>WorkBuddy SkillHub</td><td>20+ built-in skill packs</td><td>Ready to use out of the box</td></tr>
+</tbody>
+</table></div>
+<h3>It looks like an app store, but differs in four key ways</h3>
+<ol class="num">
+<li><div><strong>The Agent picks the tool.</strong> Most calls come from the model matching tool descriptions to the task. What wins: clear descriptions, high task success rates and fast responses.</div></li>
+<li><div><strong>Installed doesn't mean used.</strong> One Agent can connect to several ad platforms and chooses again for each task. Retention comes from getting the job done every time.</div></li>
+<li><div><strong>Platforms also run their own ads.</strong> ChatGPT and Gemini sell ads themselves, so partnerships need to highlight differentiated value, backed by a multi-platform footprint.</div></li>
+<li><div><strong>Distribution is getting more granular.</strong> More calls now happen inside a Skill or workflow.</div></li>
+</ol>
+<p>Three variables drive MAA per Agent: <strong>entry-point exposure</strong> (featured slots, default prompts, branded hubs, templates), <strong>authorization friction</strong> (Meta has cut it to 5–7 minutes with no app review, the industry benchmark) and <strong>first-task results</strong>.</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-forms">Next: Six interaction formats inside Agents <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-forms" aria-label="Six interaction formats inside Agents"><div class="modal-bar"><span class="modal-n">04 / 12</span><b>Six interaction formats<wbr> inside Agents</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+<figure>
+<figcaption>How the six formats stack</figcaption>
+<div class="sub">Bottom up: make it work, make it work well, make it look good, make it easy to install, then get it seen</div>
+<div class="stack">
+<div class="layer"><div class="k">Distribution layer<small>Hubs · Experts · Buddy apps</small></div><div class="d">How brands and verticals get exposure</div><div class="e">140+ vertical experts on WorkBuddy; 30+ launch partners for Buddy apps; TikTok Agentic Hub</div></div>
+<div class="layer"><div class="k">Packaging layer<small>Plugin</small></div><div class="d">One install delivers the three layers below</div><div class="e">2,000+ listings on Claude Marketplace; ChatGPT plugin directory replaced the app directory in 2026-07</div></div>
+<div class="layer"><div class="k">Interface layer<small>Agent apps (mini-program style)</small></div><div class="d">How results are shown and spend is confirmed</div><div class="e">1,624 ChatGPT apps; MCP Apps standard released 2026-01</div></div>
+<div class="layer"><div class="k">Method layer<small>Skill</small></div><div class="d">The steps and rules to follow</div><div class="e">Became an open standard in 2025-12; adopted by OpenAI, Microsoft, Cursor and Figma</div></div>
+<div class="layer base"><div class="k">Execution layer<small>MCP connector</small></div><div class="d">What it can connect to and do</div><div class="e">About 18.8K servers in the official Registry; TikTok, Meta and Amazon Ads MCPs</div></div>
+</div>
+<div aria-label="A typical campaign task" class="flow"><span>Start from a hub or a single prompt</span><i>→</i><span>An expert or Skill breaks down the steps</span><i>→</i><span>Read and write the account via MCP</span><i>→</i><span>Preview and confirm spend in an app card</span></div>
+<div class="src">Note: Public reports describe Tongdaxin's WorkBuddy launch as a "connector marketplace listing"; no official "hub" name has been seen.</div>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Ad workflow</th><th>Primary format</th></tr></thead>
+<tbody>
+<tr><td>Reporting</td><td>Read-only MCP tools + reporting Skill</td></tr>
+<tr><td>Diagnostics (Pixel, creative, delivery)</td><td>Diagnostic Skill + MCP</td></tr>
+<tr><td>Creative</td><td>Creative Skill or expert; standalone creative Agents connect via the Hub</td></tr>
+<tr><td>Campaign setup and budget changes</td><td>MCP write operations + human approval, confirmed in an app card</td></tr>
+<tr><td>Branded end-to-end experience</td><td>Hub / Buddy app</td></tr>
+</tbody>
+</table></div>
+<h3>Where each format heads over the next 12–18 months <span class="tag">Author's view</span></h3>
+<div class="trend">
+<div class="tc"><div class="h">Skill<span class="arrow up">▲ Fastest growth</span></div><p>Will make up most long-tail supply; heavy overlap makes high-quality Skills scarcer.</p></div>
+<div class="tc"><div class="h">MCP<span class="arrow up">▲ Consolidating to official</span></div><p>Shifting to remote servers maintained by platforms and brands; 17% of remote servers are already down.</p></div>
+<div class="tc"><div class="h">Plugin<span class="arrow up">▲ Mainstream outside China</span></div><p>Becoming the main distribution and install format outside China; ChatGPT and Claude have both standardized on plugins.</p></div>
+<div class="tc"><div class="h">Agent apps<span class="arrow up">▲ High-value use cases</span></div><p>Few in number, but growing in transactions, ordering and confirmation; write operations need visual confirmation.</p></div>
+<div class="tc"><div class="h">Hubs<span class="arrow fl">◆ Mostly China</span></div><p>China is taking a mini-program-style branded entry route, with WorkBuddy first to ship.</p></div>
+<div class="tc"><div class="h">Experts / GPTs<span class="arrow dn">▼ Shrinking</span></div><p>GPTs retire in 2026-12 and Gems migrate to Skills from 2026-11; experts with data and tools will remain.</p></div>
+</div>
+<div class="implication"><strong>What it means for TT4B:</strong> MCP is the foundation and must be stable and officially maintained. Skills are the main area for new investment. Pair write operations with app-card confirmation. List as a plugin outside China; in China (WorkBuddy, Doubao), build a branded hub or Buddy app. No standalone investment in the expert format.</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t4">Next: Ad buying meets commerce <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t4" aria-label="Ad buying meets commerce"><div class="modal-bar"><span class="modal-n">05 / 12</span><b>Ad buying<wbr> meets commerce</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="thesis">Agents don't just help advertisers buy ads. They now sell ads too and drive transactions directly. Buying, selling and checkout are converging in a single conversation.</p>
+<p>ChatGPT Ads passed a $1B annualized run rate about 200 days after launch. As of 2026-09-23 it covers 63 countries, including 7 new Asian markets; ads appear only on the Free / Go tiers and are labeled. Google is also testing ad placements in AI Mode and Gemini.</p>
+<h3>Three programmatic protocols will coexist in layers</h3>
+<div class="tbl"><table>
+<thead><tr><th>Protocol</th><th>Backed by</th><th>What it is</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td>OpenRTB</td><td>IAB Tech Lab</td><td>Current real-time bidding standard</td><td>Underlying pipes, millisecond bidding</td></tr>
+<tr><td>AdCP</td><td>Scope3, Yahoo, PubMatic and others (2025-10-15)</td><td>Built on MCP and A2A; buy-side and sell-side Agents negotiate, place orders and pull reports in natural language</td><td>New Agent-native protocol</td></tr>
+<tr><td>AAMP</td><td>IAB Tech Lab (named 2026-02-26)</td><td>Adds Agent interfaces on top of OpenRTB and OpenDirect</td><td>Agent retrofit of existing standards</td></tr>
+</tbody>
+</table></div>
+<p>AdCP and AAMP overlap on 13 capabilities, and PubMatic and VIOOH already support both. Our view: they will coexist in layers for the next 2–3 years, and TikTok's core capabilities need to support both interfaces. On the commerce side, there is ACP from OpenAI and Stripe, and Google's UCP. McKinsey projects Agent-driven US B2C retail sales of about $900B to $1T by 2030, and $3T to $5T globally.</p>
+<figure>
+<figcaption>Tiering Agents by distribution value × ad competition</figcaption>
+<div class="sub">We partner with ChatGPT and Gemini even though they run their own ads, but invest deeper and more steadily in Agents that don't sell ads</div>
+<div class="m2">
+<div class="ax corner"></div><div class="ax">Low ad overlap (no ads)</div><div class="ax">High ad overlap (runs its own ads)</div>
+<div class="ax y">High distribution value</div>
+<div class="cell deep"><b>Invest deeply</b>Claude, Canva, Shopify, Copilot and others: prioritize deep integration and aim to be the default call</div>
+<div class="cell coop"><b>Partner and compete</b>ChatGPT, Gemini: integrate, while holding clear data and attribution boundaries</div>
+<div class="ax y">Low distribution value</div>
+<div class="cell"><b>Standard integration</b>Long-tail workflow Agents self-serve via standard MCP and Skills</div>
+<div class="cell"><b>Monitor</b>No proactive investment for now</div>
+</div>
+</figure>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-rivals">Next: Peer landscape: most have opened write access <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-rivals" aria-label="Peer landscape: most have opened write access"><div class="modal-bar"><span class="modal-n">06 / 12</span><b>Peer landscape: most have opened write access</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="note">"Write access" means that, with advertiser authorization, third-party Agents can act on the account directly (create campaigns, change budgets, start and pause ads), not just read data. The focus is now shifting to packaged workflows.</p>
+<div class="tbl"><table>
+<thead><tr><th>Platform</th><th>1P Agent</th><th>Open to 3P</th><th>Openness</th><th>Packaged workflows</th></tr></thead>
+<tbody>
+<tr><td>Meta</td><td>Advantage+, Business AI, Muse</td><td>Ads MCP</td><td><span class="tag rw">Write access</span> GA 7-16</td><td>Many tools, few packaged workflows</td></tr>
+<tr><td>Google</td><td>Ask Advisor, AI Max, PMax</td><td>Ads API (read/write), MCP (read-only)</td><td><span class="tag">Partially open</span> In-Agent execution only in its own products</td><td>Ask Advisor has built-in diagnostics, recommendations and execution; not open to 3P</td></tr>
+<tr><td>Amazon</td><td>Amazon Ads Agent</td><td>Ads MCP</td><td><span class="tag rw">Write access</span> 2026-02</td><td>Cross-country expansion and end-to-end SP ad creation in one prompt</td></tr>
+<tr><td>Microsoft</td><td>Copilot in Microsoft Advertising</td><td>Ads API, Copilot plugin</td><td><span class="tag">Partially open</span></td><td>Distributed through Copilot</td></tr>
+<tr><td>TikTok</td><td>Symphony, Smart+</td><td>TikTok for Business MCP</td><td><span class="tag rw">Write access</span></td><td>Full tool set in place; workflow Skills are an area to improve</td></tr>
+</tbody>
+</table></div>
+<p>Google's MCP is read-only, and it keeps direct in-Agent campaign execution to its own Ask Advisor and Gemini. Few platforms let advertisers run campaigns directly inside 3P Agents like ChatGPT and Claude. That is TikTok's window.</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-cases">Next: Top 10 benchmark cases <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-cases" aria-label="Top 10 benchmark cases"><div class="modal-bar"><span class="modal-n">07 / 12</span><b>Top 10<wbr> benchmark cases</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>Ranked on a blend of users, call volume and attributable revenue. Most companies don't break out MCP revenue, so figures follow each company's public disclosures.</p>
+<div class="cases" id="caseGrid"></div>
+<h3>Counterexample: checkout inside ChatGPT</h3>
+<p>Walmart reports that in-chat checkout converts at only about 1/3 the rate of sending users to its own site; Etsy has seen almost no sales; Instacart's volume is small. For now, "decide in the chat, buy in the brand's own product" works better.</p>
+<figure class="dm">
+<figcaption>Six common practices: Canva alone shows five</figcaption>
+<div class="sub">A solid dot means the practice is visible in public sources</div>
+<div class="tbl" style="margin:0;border:0"><table id="playMatrix"></table></div>
+</figure>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-canva">Next: How Canva works in ChatGPT <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-canva" aria-label="How Canva works in ChatGPT"><div class="modal-bar"><span class="modal-n">08 / 12</span><b>How Canva works in ChatGPT</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="kpis" style="margin:8px 0 24px">
+<div class="kpi"><b>26M</b><span>Uses inside ChatGPT in October 2025 alone</span></div>
+<div class="kpi"><b>Top 10</b><span>canva.com's rank among domains receiving ChatGPT referrals</span></div>
+<div class="kpi"><b>12M</b><span>Designs created via MCP across AI assistants</span></div>
+<div class="kpi"><b>+375%</b><span>Growth in Canva GPT usage after becoming the first design connector</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px">
+<div style="min-width:0">
+<h3 style="margin-top:0">First in line at every new entry point</h3>
+<div class="tl">
+<div class="it"><div class="dt">2025-06-26</div>ChatGPT's first design connector, launched alongside the Canva MCP Server</div>
+<div class="it"><div class="dt">2025-10-06</div>One of 7 launch partners for ChatGPT Apps (with Booking, Coursera, Expedia, Figma, Spotify, Zillow)</div>
+<div class="it"><div class="dt">Late 2026-01</div>Brand Kit (logo, fonts, colors) launches in Claude</div>
+<div class="it"><div class="dt">2026-02-05</div>Brand Kit and step-by-step presentation building launch in ChatGPT</div>
+</div>
+</div>
+<div style="min-width:0">
+<h3 style="margin-top:0">User journey</h3>
+<div class="flow" style="flex-direction:column;align-items:stretch">
+<span><strong>Trigger</strong>: the user asks to "make a poster with Canva," or ChatGPT suggests Canva based on context</span><i style="text-align:center">↓</i>
+<span><strong>Authorize</strong>: one-time OAuth, no setup after that</span><i style="text-align:center">↓</i>
+<span><strong>Preview</strong>: several design options appear right in the chat</span><i style="text-align:center">↓</i>
+<span><strong>Return</strong>: one click to canva.com to polish, export and publish</span>
+</div>
+</div>
+</div>
+<h3>Five interactions that drive usage</h3>
+<p>Canva's scale in ChatGPT comes from more than launching early. It comes from interaction design: lower the bar for first use, make every conversation produce something visible, then bring users back to Canva. The visuals below are illustrative mockups redrawn from public Canva and OpenAI demos; see the official demos at <a href="https://www.canva.com/newsroom/news/" rel="noopener" target="_blank">Canva Newsroom</a> and the <a href="https://openai.com/index/introducing-apps-in-chatgpt/" rel="noopener" target="_blank">OpenAI launch post</a>.</p>
+<div class="demos">
+<div class="demo">
+<div class="demo-h"><b>① Called even when not named</b><span class="tag rw">Acquire</span></div>
+<div class="chat">
+<div class="bub u">My coffee shop opens next Saturday. Can you make me a poster?</div>
+<div class="card"><div class="row"><span>ChatGPT suggests</span><b>Canva</b></div><div class="btns"><span class="pri">Design with Canva</span><span>Not now</span></div></div>
+</div>
+<p><strong>Why it works:</strong> The user only states the need, and ChatGPT recommends Canva from context. New users get pulled in without knowing Canva is connected.</p>
+<p><strong>What TikTok can apply:</strong> Write tool descriptions that cover phrases like "promote a new product" or "drive traffic to my store," so advertisers reach TikTok without naming it.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>② Results on the first try</b><span class="tag rw">Activate</span></div>
+<div class="chat">
+<div class="card"><div class="row"><span>Canva · 3 designs created</span><b>Poster</b></div><div class="thumbs"><i class="on"></i><i></i><i></i></div><div class="btns"><span class="pri">Use this one</span><span>Show more</span></div></div>
+</div>
+<p><strong>Why it works:</strong> Multiple drafts appear in the chat within seconds. First tasks succeed at a high rate, so users come back.</p>
+<p><strong>What TikTok can apply:</strong> Turn one sentence into 2–3 Smart+ plan previews (creative, budget, estimated results). Show the results first, then ask the advertiser to confirm.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>③ Keep editing in the chat</b><span class="tag rw">Retain</span></div>
+<div class="chat">
+<div class="bub u">Make it vertical and use our brand colors</div>
+<div class="card"><div class="row"><span>Brand Kit applied</span><b>Vertical 9:16</b></div><div class="seg"><span>Landscape</span><span class="on">Vertical</span><span>Square</span></div></div>
+</div>
+<p><strong>Why it works:</strong> Brand Kit (logo, fonts, colors) applies automatically, and every round of edits happens in the chat. Sessions get longer and repeat visits go up.</p>
+<p><strong>What TikTok can apply:</strong> Remember the advertiser's account, brand assets and usual settings, so "raise the budget to 500" or "swap in the second video" takes one sentence.</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>④ One click back to the product</b><span class="tag rw">Convert</span></div>
+<div class="chat">
+<div class="card"><div class="row"><span>Opening poster · Vertical</span><b>Draft</b></div><div class="btns"><span class="pri">Edit in Canva</span><span>Download PNG</span></div></div>
+</div>
+<p><strong>Why it works:</strong> Polishing, exporting and team collaboration all happen back in Canva. Agent traffic becomes Canva's own active users and paid seats.</p>
+<p><strong>What TikTok can apply:</strong> Put "Adjust in Ads Manager" on every card. Confirmation, payment and fine-tuning happen in Ads Manager and count toward TikTok's own active advertisers.</p>
+</div>
+</div>
+<div class="demo" style="margin-top:14px">
+<div class="demo-h"><b>⑤ Authorize once, use in every Agent</b><span class="tag rw">Scale</span></div>
+<p>The same Canva account and Brand Kit work across ChatGPT, Claude and other Agents, with 12M designs created via MCP across AI assistants. Wherever users work, Canva is there.</p>
+<p><strong>What TikTok can apply:</strong> After one authorization, advertisers can use TikTok directly in ChatGPT, Claude, Doubao and other Agents with no repeat setup, and MAA adds up naturally.</p>
+</div>
+<div class="implication"><strong>What this means for TT4B:</strong> MAA depends less on how many Agents list us and more on four steps: Do we get called proactively? Does the first use deliver results right away? Can users keep editing in the chat? Is the path back to Ads Manager smooth? We recommend tracking each with its own metric: call rate, first-task success rate, multi-turn usage rate and return rate.</div>
+<h3>Why it works</h3>
+<div class="plays">
+<div class="play"><b>Drafts only</b><p>Polishing, exporting and team collaboration all happen back in Canva.</p></div>
+<div class="play"><b>Frequent, universal needs</b><p>Making graphics and slides is an everyday task, so call volume is naturally high.</p></div>
+<div class="play"><b>First to launch at every new entry point</b><p>Launch partners get keynote exposure and default recommendations.</p></div>
+<div class="play"><b>From individuals to enterprises</b><p>Brand Kit turns consumer traffic into paid team seats. The company has $4B ARR and 265M MAU.</p></div>
+</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-analogy">Next: The closest precedent is the search era <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-analogy" aria-label="The closest precedent is the search era"><div class="modal-bar"><span class="modal-n">09 / 12</span><b>The closest precedent is<wbr> the search era</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="thesis">From 2000 to 2020, Google won the entry point through default search deals, then gave its own services top placement in verticals such as shopping, local and travel. The Facebook platform (Zynga) and Alexa Skills serve as additional reference points.</p>
+<div class="tbl"><table>
+<thead><tr><th>Parallel</th><th>Search era</th><th>Agent entry points today</th></tr></thead>
+<tbody>
+<tr><td>The platform controls distribution, sells ads and also competes directly</td><td>Google Shopping favored its own comparison service; EU fine of €2.42B (upheld on final appeal, 2024-09)</td><td>ChatGPT Ads passed $100M in revenue within 6 weeks of launch</td></tr>
+<tr><td>Algorithms decide what gets recommended</td><td>SEO decides ranking</td><td>Tool description optimization is the new SEO</td></tr>
+<tr><td>Default placement is extremely valuable</td><td>Google paid Apple $20B in 2022 to be the default search engine</td><td>Launch partners, default recommendations, preinstalled connectors</td></tr>
+<tr><td>Traffic must ultimately become owned users</td><td>Booking turned paid traffic into members and app users</td><td>Canva and Shopify bring users back to their own products to complete transactions</td></tr>
+</tbody>
+</table></div>
+<div class="vs">
+<div class="who win"><div class="role">Winner</div><b>Booking</b><p>Spent over $1B on Google ads in a single quarter in 2018; 2024 marketing spend was $7.3B, 31% of revenue. Embraced a platform-controlled entry point, bought traffic aggressively, and converted it into members, app users and direct visits.</p></div>
+<div class="who lose"><div class="role">Left behind</div><b>Yelp, TripAdvisor</b><p>After their content was indexed, Google gave its own local and travel services top placement on results pages. Traffic stayed on Google, and their main recourse became years of antitrust litigation.</p></div>
+<div class="who ref"><div class="role">Additional reference</div><b>Zynga · Alexa Skills</b><p>Zynga made up 12% of Facebook's revenue in 2011. When the rules changed, FarmVille MAU fell from 80M to 20M. Alexa skills retained about 3% of users by week two, and 69% of skills had 0–1 reviews.</p></div>
+</div>
+<figure>
+<figcaption>Without owned users, one platform rule change can wipe you out</figcaption>
+<div class="sub">FarmVille MAU (millions), before and after Facebook changed its notification and distribution rules</div>
+<div class="rows" id="zynga"></div>
+<div class="src">Source: Zynga 2011–2012 annual reports and SEC filings</div>
+</figure>
+<h3>Six things the winners had in common</h3>
+<ol class="num">
+<li><div><strong>Treat call priority as a metric to manage.</strong> Search-era winners invested in SEO; Canva and Context7 have clear tool descriptions and focused features.</div></li>
+<li><div><strong>Invest heavily in default placement.</strong> Booking bought ads at scale; Canva and HubSpot aim to launch first every time; Shopify is on by default.</div></li>
+<li><div><strong>Turn traffic into owned users.</strong> Booking converts to members and app users; Canva sends users back to its editor; Shopify routes checkout back to the store.</div></li>
+<li><div><strong>Don't bet on a single platform.</strong> Shopify, Canva and HubSpot integrate with ChatGPT, Claude, Gemini, Copilot and other Agents at once; Zynga bet only on Facebook.</div></li>
+<li><div><strong>Build trust with public data.</strong> Atlassian and Supabase publish call volume and results.</div></li>
+<li><div><strong>Solve visibility first, then scale.</strong> Alexa had plenty of skills, but users couldn't find them; the winners secured recommendation slots and high-frequency use cases first.</div></li>
+</ol>
+<details><summary>Why not other analogies</summary><div>
+<ul class="plain"><li><strong>WeChat Mini Programs:</strong> grew through social sharing, and Agents have no equivalent viral loop.</li><li><strong>App Store:</strong> depends on users searching and installing, while most Agent calls are chosen automatically by the model.</li><li><strong>Payment networks, header bidding (programmatic ad auctions):</strong> closer to protocol battles, and explain only part of the picture.</li></ul>
+</div></details>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-strategy">Next: Strategy and four core levers <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-strategy" aria-label="Strategy and four core levers"><div class="modal-bar"><span class="modal-n">10 / 12</span><b>Strategy and four core levers</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<figure>
+<figcaption>Three workstreams together drive MCP MAA in the 3P Agent channel</figcaption>
+<div class="sub">MCP MAA = number of Agents × MAA per Agent; incremental revenue = Lift ARPA × MAA</div>
+<div class="trend">
+<div class="tc"><div class="h">Coverage<span class="arrow" style="color:var(--accent)">Agent</span></div><p>Focus on the top 11 Agents, weighting general and workflow Agents equally.<br/>Metric: reachable advertiser coverage</p></div>
+<div class="tc"><div class="h">Usage<span class="arrow" style="color:var(--accent)">MCP</span></div><p>Move from listed to called by default; lower the bar for authorization and first use.<br/>Metrics: impression rate, click-through rate, authorization rate</p></div>
+<div class="tc"><div class="h">Outcomes<span class="arrow" style="color:var(--accent)">Skills</span></div><p>Complete high-frequency tasks in one sentence; end-to-end workflows for key verticals.<br/>Metrics: call volume, share of write operations, retention</p></div>
+</div>
+<div class="layer base" style="margin-top:10px;grid-template-columns:1fr;text-align:center;font-size:14px">Foundation: per-Agent measurement funnel · permissions and spend safety · China cross-border focus</div>
+</figure>
+<h3>Four core levers across every direction</h3>
+<p class="note">These aren't new tasks. They're the shared method behind all five directions. When resources are tight, protect these four first and watch two metrics: task success rate by Agent and share of write operations.</p>
+<div class="plays">
+<div class="play"><b>1 · Get Agents to call TikTok first</b><p>Write tool names and descriptions in advertisers' own words ("check my TikTok ad results," "create a Smart+ campaign"); keep tools few and focused; build a test question set and measure hit rate by Agent on a regular cadence.</p></div>
+<div class="play"><b>2 · Win default entry points</b><p>Pursue launch partnerships, starter prompts, templates and industry showcases. Aim to be in the first wave at every new entry point (Claude Marketplace, the ChatGPT plugin directory, WorkBuddy Buddy apps).</p></div>
+<div class="play"><b>3 · One-click authorization, success on first use</b><p>Meta already offers OAuth sign-in with no developer credentials; Amazon still limits access to API partners. That's our opening to pull ahead. Package high-frequency tasks as Skills so the first use delivers results.</p></div>
+<div class="play"><b>4 · Earn trust for write operations with safeguards</b><p>New items paused by default, spend caps, second confirmation, per-Agent authorization; write operations should chain into complete tasks rather than scattered single-purpose endpoints.</p></div>
+</div>
+<h3>Five priority directions</h3>
+<ol class="num">
+<li><div><strong>Coverage: general and workflow Agents in parallel.</strong> General Agents (ChatGPT, Gemini, Claude, Copilot, Doubao) set the ceiling on reach, so secure integration first. Workflow Agents (Canva, Shopify, Mailchimp, Wix, GoDaddy Airo) carry clearer intent, so prioritize deep integration. Example combo: create assets in Canva → build a Smart+ ad in one step with TikTok MCP → review reports and adjust budget in ChatGPT or Claude.</div></li>
+<li><div><strong>Usage: from listed to called by default.</strong> Discoverable → low-friction authorization → successful first use (e.g., checking yesterday's spend) → habit (weekly reports).</div></li>
+<li><div><strong>Outcomes: package high-frequency tasks as one-sentence Skills.</strong> Start with four: creating Smart+ ads, creative diagnostics, budget adjustments and weekly reports.</div></li>
+<li><div><strong>Investment: allocate by marginal MAA.</strong> Rank by "expected new MAA ÷ resources invested" instead of spreading effort evenly (see chart below).</div></li>
+<li><div><strong>Trust: permissions and spend safety.</strong> Authorization per Agent, revocable at any time; spend caps and second confirmation for budget-related write operations; a full, auditable activity log.</div></li>
+</ol>
+<figure>
+<figcaption>MAA funnel per Agent: every step compounds</figcaption>
+<div class="sub">Illustrative calculation using Claude's 800K reachable advertisers (low end of the range) <span class="tag est">Assumed values, method only</span></div>
+<div class="fun" id="funnel"></div>
+</figure>
+<h3>Five takeaways for TT4B</h3>
+<ol class="num">
+<li><div><strong>Manage Agent calls the way we manage SEO.</strong> Test hit rate regularly with a question set and refine tool descriptions accordingly.</div></li>
+<li><div><strong>Pursue launch slots and default recommendations, with zero setup.</strong> Aim for the first wave at every new entry point, with no configuration needed after the first authorization.</div></li>
+<li><div><strong>Stay balanced across platforms.</strong> Go deep with relatively neutral Agents (Claude, Kimi, Manus, Perplexity) and Doubao, and keep backing open protocols (MCP, Skills).</div></li>
+<li><div><strong>Bring users back to TikTok Ads Manager.</strong> Agents generate plans and drafts; confirmation, payment and fine-tuning happen in Ads Manager, turning Agent traffic into our own advertisers.</div></li>
+<li><div><strong>Publish usage data.</strong> Follow Atlassian's lead and regularly share MCP monthly actives, call volume and success stories.</div></li>
+</ol>
+<h3>XFN roles</h3>
+<div class="tbl"><table>
+<thead><tr><th>Direction</th><th>MPP</th><th>GBM</th><th>PM</th></tr></thead>
+<tbody>
+<tr><td>Coverage</td><td>Drive partnerships with top Agents</td><td>Regional Agents and cross-border channels</td><td>Integration capabilities and directory listings</td></tr>
+<tr><td>Usage</td><td>Co-marketing, recommendation slots</td><td>Advertiser education and first-use onboarding</td><td>Authorization flow and first-use experience</td></tr>
+<tr><td>Outcomes</td><td>Co-build Skills with partners</td><td>Industry use cases and success stories</td><td>Skill design and outcome measurement</td></tr>
+<tr><td>Trust</td><td>Partner compliance requirements</td><td>Advertiser feedback</td><td>Permissions and spend safety mechanisms</td></tr>
+</tbody>
+</table></div>
+<div class="implication"><strong>How this ties to the Tracker:</strong> No new partner list. Instead, add four checks to the existing P0 / P1 partners in the Tracker: launch slot, zero setup, hit rate and traffic back to Ads Manager.</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-china">Next: China cross-border <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-china" aria-label="China cross-border"><div class="modal-bar"><span class="modal-n">11 / 12</span><b>China cross-border</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>Cross-border advertisers account for about 8% of global ad budgets, but they use different Agents than advertisers elsewhere, so they need their own channel strategy. The China Agentic launch is expected to coincide with the APAC Partner Summit in December.</p>
+<figure>
+<figcaption>Cross-border advertisers reachable through Chinese Agents</figcaption>
+<div class="sub">Advertisers; bars show the range, vertical lines the baseline <span class="tag est">Model estimate, not public</span></div>
+<div class="rows" id="cn"></div>
+<div class="axis" style="margin-top:6px"><span></span><div class="ticks" id="cnTicks"></div><span></span></div>
+<div class="src">Coverage among cross-border advertisers: Doubao is highest, WorkBuddy about 22%, Accio Work about 20%, Kimi about 11%, Coze about 9%. Qwen was not modeled and is roughly estimated from its MAU relative to Doubao.</div>
+</figure>
+<ul class="plain">
+<li><strong>Doubao first.</strong> Owned by ByteDance, it has the lowest integration cost and is the general Agent most used by cross-border advertisers.</li>
+<li><strong>Workflow Agents sit closer to campaign work.</strong> WorkBuddy and Accio Work each reach about 1/5 of cross-border merchants, whose daily tasks are product selection, creative and operations.</li>
+<li><strong>Align with the December launch.</strong> Announce integrations and success stories together at the APAC Partner Summit.</li>
+</ul>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-outlook">Next: The next 12–18 months <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-outlook" aria-label="The next 12–18 months"><div class="modal-bar"><span class="modal-n">12 / 12</span><b>The next 12–18 months</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="phases">
+<div class="ph now"><div class="when">2026 Q4</div><div class="what">Window before write access goes mainstream <span class="tag rw">Now</span></div><ul><li>Google Ask Advisor opens more broadly</li><li>Meta MCP keeps adding tools</li><li>ChatGPT Ads keeps expanding</li><li>App directories grow to thousands of apps</li></ul></div>
+<div class="ph"><div class="when">2027 H1</div><div class="what">From tools to workflows</div><ul><li>Write access becomes standard</li><li>Skill marketplaces become a main distribution channel</li><li>Per-Agent authorization becomes standard in procurement</li><li>Platforms start disclosing usage</li></ul></div>
+<div class="ph"><div class="when">2027 H2 – 2028 Q1</div><div class="what">Agent-to-Agent transactions</div><ul><li>Buyer Agents negotiate directly with platforms</li><li>In-Agent ads scale up</li><li>Automated cross-platform budget allocation</li><li>Commerce and ads close the loop</li></ul></div>
+</div>
+<p class="note" style="margin-top:10px">Phases reflect the author's judgment. TikTok's supply advantage matters most in phase one; from phase two on, Skills and user habits decide.</p>
+<h3>Three types of buyer Agents</h3>
+<div class="tbl"><table>
+<thead><tr><th>Type</th><th>Examples</th><th>Main users</th><th>What it means for TT4B</th></tr></thead>
+<tbody>
+<tr><td>General-purpose Agents</td><td>ChatGPT, Gemini, Claude, Doubao</td><td>SMB advertisers</td><td>Sets the reach ceiling; won through integrations and Skills</td></tr>
+<tr><td>Vertical / workflow Agents</td><td>Canva, Shopify, Accio Work</td><td>E-commerce and content-led advertisers</td><td>Strongest ad intent; won through deep integration</td></tr>
+<tr><td>In-house Agents</td><td>WPP video Buyer Agent, large brands' internal Agents</td><td>Agencies and large accounts</td><td>Largest budgets; won through protocol compatibility (AdCP / AAMP)</td></tr>
+</tbody>
+</table></div>
+<h3>Key uncertainties and responses</h3>
+<div class="tbl"><table>
+<thead><tr><th>Uncertainty</th><th>If it happens</th><th>Response</th></tr></thead>
+<tbody>
+<tr><td>General-purpose Agents change their openness to third parties</td><td>Call volume fluctuates</td><td>Go deeper with neutral and workflow Agents</td></tr>
+<tr><td>Protocol fragmentation persists</td><td>Integration costs rise</td><td>Make core capabilities compatible with all major protocols</td></tr>
+<tr><td>Advertisers hesitate to let Agents spend money</td><td>Share of write operations stalls</td><td>Tiered permissions, budget caps, audit trails</td></tr>
+<tr><td>Platforms don't disclose Agent usage</td><td>Hard to measure partnership impact</td><td>Build a per-Agent measurement funnel</td></tr>
+</tbody>
+</table></div>
+<p>General-purpose Agents need third-party tools that keep delivering value to users. Structured data, clear tool descriptions and high task success rates are what keep a tool at the top of Agent recommendations and rankings.</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t1">Next: Work is moving to general-purpose Agents <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-method" aria-label="Methodology and sources"><div class="modal-bar"><span class="modal-n">Appx</span><b>Methodology and sources</b><button class="x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p><strong>Method.</strong> Built mainly on public sources; internal data is used only to describe where TT4B stands today. We tracked launches of official MCPs, in-house Agents and protocols across ad platforms from 2025-10 to 2026-10, relying on platform announcements or trade press; where dates conflict, we use the first date of public availability. Benchmark cases are ranked on publicly disclosed users, call volume and attributable revenue; we do not estimate undisclosed figures. Historical analogies are compared on four dimensions: whether the platform also runs its own ads, how selection works, the value of the default slot, and how the winner retained users. Outlook stages and format-share trends reflect the author's judgment.</p>
+<p><strong>Estimating reachable advertisers.</strong> No Agent discloses how many advertisers use it. We take active digital advertisers who use Agents (~16.28M, representing ~$553.3B in budget) as the denominator, and estimate each Agent's standalone coverage from its user base, enterprise penetration, and overlap with SMBs and marketers. Qwen is roughly scaled from its MAU relative to Doubao's. The illustrative funnel uses assumed values.</p>
+<p><strong>Internal data definitions.</strong> MCP MAA of 90.7K is team data as of end of September 2026; listings and the list of live Agents come from the team's partner tracker.</p>
+<p><strong>Limitations.</strong> No platform publishes MCP usage, so peer comparisons rely only on launch status and permissions.</p>
+<ul class="src-list">
+<li><a href="https://ads.tiktok.com/business/en/blog/tiktok-agentic-hub-ai-agents-skills-mcp" target="_blank" rel="noopener">TikTok Agentic Hub</a></li>
+<li><a href="https://www.markifact.com/blog/state-of-advertising-mcps" target="_blank" rel="noopener">State of Advertising MCPs (Markifact)</a></li>
+<li><a href="https://www.admove.ai/blog/metas-mcp-and-cli-for-advertisers" target="_blank" rel="noopener">Meta MCP and CLI (admove)</a></li>
+<li><a href="https://ppc.land/meta-opens-ads-mcp-to-any-app-cutting-integration-code-to-zero/" target="_blank" rel="noopener">Meta opens Ads MCP to any app (PPC Land)</a></li>
+<li><a href="https://www.marketingdive.com/news/amazon-enables-communication-between-ads-platform-and-ai-agents/811566/" target="_blank" rel="noopener">Amazon Ads MCP (Marketing Dive)</a></li>
+<li><a href="https://about.ads.microsoft.com/en/solutions/technology/mcp-server" target="_blank" rel="noopener">Microsoft Advertising MCP</a></li>
+<li><a href="https://business.google.com/us/accelerate/googlemarketinglive/keynote/" target="_blank" rel="noopener">Google Marketing Live 2026</a></li>
+<li><a href="https://technologychecker.io/blog/chatgpt-statistics" target="_blank" rel="noopener">ChatGPT statistics</a></li>
+<li><a href="https://www.stanventures.com/news/state-of-google-gemini-july-2026-7431/" target="_blank" rel="noopener">Gemini statistics</a></li>
+<li><a href="https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-turns-claude-into-an-ai-marketplace-with-2-000-plus-plugins-and-connectors/" target="_blank" rel="noopener">Claude Marketplace</a></li>
+<li><a href="https://www.digitalapplied.com/blog/mcp-adoption-statistics-2026-model-context-protocol" target="_blank" rel="noopener">MCP adoption statistics (Digital Applied)</a></li>
+<li><a href="https://ppc.land/openai-gains-7-asian-markets-for-chatgpt-ads-passing-60-countries/" target="_blank" rel="noopener">ChatGPT Ads in 63 countries (PPC Land)</a></li>
+<li><a href="https://www.forbes.com/sites/gabrielalinzainescu/2026/08/31/openais-chatgpt-ads-hit-1-billion-run-rate-in-just-200-days/" target="_blank" rel="noopener">ChatGPT Ads hits $1B run rate (Forbes)</a></li>
+<li><a href="https://digiday.com/media-buying/wtf-ad-context-protocol/" target="_blank" rel="noopener">AdCP (Digiday)</a></li>
+<li><a href="https://iabtechlab.com/navigating-the-agentic-frontier-the-iab-tech-lab-2026-roadmap/" target="_blank" rel="noopener">IAB Tech Lab 2026 Roadmap</a></li>
+<li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants" target="_blank" rel="noopener">McKinsey: The Agentic Commerce Opportunity</a></li>
+<li><a href="https://www.forbes.com/sites/rogerdooley/2026/02/11/by-years-end-4-in-5-small-businesses-will-use-ai-marketing-tools/" target="_blank" rel="noopener">Constant Contact survey (Forbes)</a></li>
+<li><a href="https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025" target="_blank" rel="noopener">Gartner forecast on task-specific Agents</a></li>
+<li><a href="https://chainstoreage.com/instacart-launches-app-end-end-shopping-chatgpt" target="_blank" rel="noopener">Instacart ChatGPT App and Instant Checkout</a></li>
+<li><a href="https://claude.com/blog/interactive-tools-in-claude" target="_blank" rel="noopener">Claude interactive connectors and MCP Apps</a></li>
+<li><a href="https://techcrunch.com/2025/10/06/openai-launches-apps-inside-of-chatgpt/" target="_blank" rel="noopener">TechCrunch: OpenAI launches apps inside ChatGPT</a></li>
+<li><a href="https://dataconomy.com/2026/02/19/canva-is-using-chatgpt-to-drive-millions-of-new-design-projects/" target="_blank" rel="noopener">Canva in ChatGPT (Dataconomy)</a></li>
+<li><a href="https://openai.com/business/guides-and-resources/the-state-of-enterprise-ai-2025-report/" target="_blank" rel="noopener">OpenAI: The State of Enterprise AI 2025</a></li>
+<li><a href="https://www.163.com/dy/article/L3FTIOLG0519U3I5.html" target="_blank" rel="noopener">QuestMobile AI app MAU (NetEase)</a></li>
+<li><a href="https://finance.sina.com.cn/roll/2026-07-23/doc-iniiufvh7741606.shtml" target="_blank" rel="noopener">WorkBuddy (Sina Finance)</a></li>
+<li><a href="https://supplier.alibaba.com/us/news/PX002DLAW.htm" target="_blank" rel="noopener">Accio Work (Alibaba.com)</a></li>
+<li>Shopify 2026 Q1 and Q2 earnings calls; Agentic Storefronts announcement (2026-03)</li>
+<li>Atlassian Rovo MCP official blog and data disclosures (2026)</li>
+<li>Supabase CEO interviews and funding announcement (2026); Stripe Sessions 2026 and ACP announcement</li>
+<li>European Commission Google Shopping decision; US DOJ v. Google trial records</li>
+<li>Booking Holdings annual reports (2018, 2024); Zynga 2011–2012 annual reports and SEC filings</li>
+<li>Alexa Skills retention research (Voicebot, VoiceLabs); WSJ 2022 reporting on Amazon's devices unit</li>
+</ul>
+<footer>Internal alignment material for XFN discussion only. Figures marked "Estimate" are model or author estimates, not public platform data.</footer>
+</div></dialog>
+<script>
+(function(){
+  /* reach range bars */
+  function ranges(id, ticksId, data, max, step, fmt){
+    var el=document.getElementById(id); if(!el) return;
+    el.innerHTML=data.map(function(d){
+      var lo=d[1]/max*100, hi=d[2]/max*100, base=d[3]!=null?d[3]/max*100:null;
+      var bar = d[1]===d[2] ? '' : '<div class="rng" style="left:'+lo+'%;width:'+Math.max(hi-lo,0.6)+'%"></div>';
+      var pt = base!=null ? '<div class="pt" style="left:calc('+base+'% - 1px)"></div>' : '';
+      return '<div class="rrow"><span>'+d[0]+'</span><div class="track">'+bar+pt+'</div><span class="v">'+d[4]+'</span></div>';
+    }).join('');
+    var t=document.getElementById(ticksId), s='';
+    for(var v=0; v<=max; v+=step){ s+='<span style="left:'+(v/max*100)+'%">'+(fmt?fmt(v):v)+'</span>'; }
+    t.innerHTML=s;
+  }
+  ranges('reach','reachTicks',[
+    ['ChatGPT',520,830,null,'5.2–8.3M'],
+    ['Canva',360,670,null,'3.6–6.7M'],
+    ['Gemini',130,360,null,'1.3–3.6M'],
+    ['Shopify',160,290,null,'1.6–2.9M'],
+    ['Claude',80,260,null,'0.8–2.6M'],
+    ['Doubao',18,54,null,'0.18–0.54M'],
+    ['WorkBuddy',23,23,23,'~0.23M']
+  ],900,150,function(v){return v?(v/100)+'M':'0'});
+  ranges('cn','cnTicks',[
+    ['Doubao',18,54,null,'180–540K'],
+    ['WorkBuddy',23,23,23,'~230K'],
+    ['Accio Work',18,18,18,'~180K'],
+    ['Qwen',10,20,null,'100–200K'],
+    ['Kimi',10,10,10,'~100K'],
+    ['Coze',8,8,8,'~80K']
+  ],60,10,function(v){return v?(v*10)+'K':'0'});
+
+  /* Zynga */
+  var z=document.getElementById('zynga');
+  if(z){ z.innerHTML=[['Before',80],['After',20]].map(function(d){
+    return '<div class="rrow"><span>'+d[0]+'</span><div class="track" style="height:22px"><div class="rng" style="left:0;width:'+(d[1]/80*100)+'%;background:'+(d[1]<50?'var(--hot)':'var(--accent)')+'"></div></div><span class="v">'+d[1]+' M</span></div>';
+  }).join(''); }
+
+  /* MCP timeline SVG */
+  var svg=document.getElementById('mcpTimeline');
+  if(svg){
+    var rows=[['Google Ads','2025-10-07',0,'Read-only · open source'],['Amazon Ads','2026-02-02',1,'Read/write · open beta'],['Meta Ads','2026-04-29',1,'Read/write · GA in July'],['Microsoft Ads','2026-06-17',0,'Read-only · pilot'],['Pinterest Ads','2026-06-17',0,'Read-only · alpha'],['TikTok for Business','2026-06-30',1,'Read/write · Agentic Hub'],['Snapchat Ads','2026-08-03',0,'Read-only · live']];
+    var t=function(d){return Date.parse(d)/864e5}, lo=t('2025-10-01'), hi=t('2026-09-30');
+    var X=function(d){return 170+(t(d)-lo)/(hi-lo)*420};
+    var s='<g font-size="11.5"><circle cx="20" cy="16" r="6" fill="var(--accent)"/><text x="32" y="20" fill="var(--ink)">Read/write (create campaigns, change budgets)</text><circle cx="220" cy="16" r="6" fill="var(--bar)"/><text x="232" y="20" fill="var(--ink)">Read-only (reporting and diagnostics)</text></g>';
+    for(var i=0;i<12;i++){var m=(9+i)%12+1, y=2025+Math.floor((9+i)/12), d=y+'-'+String(m).padStart(2,'0')+'-01', x=X(d);
+      s+='<line x1="'+x+'" x2="'+x+'" y1="54" y2="306" stroke="var(--line)"/>';
+      if(i%2===0) s+='<text x="'+x+'" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">'+String(y).slice(2)+'.'+m+'</text>';}
+    rows.forEach(function(r,i){var y=80+34*i, x=X(r[1]), c=r[2]?'var(--accent)':'var(--bar)';
+      var md=r[1].split('-');
+      s+='<text x="12" y="'+(y+4)+'" font-size="13" fill="var(--ink)"'+(r[0].indexOf('TikTok')===0?' font-weight="700"':'')+'>'+r[0]+'</text>';
+      s+='<line x1="170" x2="'+x+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)"/>';
+      s+='<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+c+'"/>';
+      var lbl=md[0]+'.'+Number(md[1])+'.'+Number(md[2])+' · '+r[3];
+      var anchor = x>540 ? 'end' : 'start', tx = x>540 ? x-14 : x+14;
+      s+='<text x="'+tx+'" y="'+(y+4)+'" text-anchor="'+anchor+'" font-size="11.5" fill="'+(r[2]?'var(--ink)':'var(--muted)')+'">'+lbl+'</text>';
+    });
+    svg.innerHTML=s;
+  }
+
+  /* cases */
+  var cases=[
+    ['1','Shopify','~13×','YoY growth in orders from AI search, 2026 Q1','Q2 AI traffic and orders ~3× a year earlier; new-buyer conversion via AI channels is 2× traditional channels; 1B+ products in Catalog','On by default for every merchant; integrate once, distribute everywhere; transactions stay in Shopify',0],
+    ['2','Canva','26M','uses inside ChatGPT in 2025-10 alone','Top 10 domain for ChatGPT referrals; LLMs drive a double-digit share of total traffic; 12M designs created to date','First to launch on every new entry point; delivers a first draft in chat, then brings users back to Canva to refine',1],
+    ['3','Atlassian Rovo MCP','5M+','MCP calls per workday','1M+ MAU; ~1/3 of calls are write operations; 44% of users are outside software teams','Official remote MCP on the existing permission model; publishes call volume and impact data',0],
+    ['4','Supabase','60%','of measurable new databases are created by Agents','CEO puts the real figure near 90%; registered developers grew from 6.5M to 10M','Became the default backend for AI app builders',0],
+    ['5','Stripe','7.8M','merchants with checkout available to Agents','70% of Stripe CLI API requests come from Agents','Owns the must-pass payment step through the ACP protocol',0],
+    ['6','HubSpot','+250%','YoY weekly actives of its ChatGPT CRM connector','First CRM connector in ChatGPT; Skills already listed on TikTok Agentic Hub','First to launch + co-marketing with OpenAI + multi-platform rollout',0],
+    ['7','Context7 (Upstash)','#1','of 1,864 servers on MCP.Directory','~2× the views of #2 (2026-03)','Solves one high-frequency pain point: looking up the latest docs',0],
+    ['8','Playwright / GitHub MCP','#2 / #7','on the same ranking','MCP SDK hit 97M downloads in 2026-05','Officially maintained; the default recommendation in developer tools',0],
+    ['9','Expedia / Booking','Launch','partners for ChatGPT Apps, 2025-10','Expedia calls the AI channel "small but promising"; no figures disclosed','Shows price-comparison cards in chat; bookings hand off to their own sites',0],
+    ['10','Other ad platforms','—','User counts not disclosed','Meta: OAuth sign-in and go, read/write; Amazon: open to API partners only','Closest peers; the difference is ease of onboarding',0]
+  ];
+  var g=document.getElementById('caseGrid');
+  if(g){ g.innerHTML=cases.map(function(c){
+    return '<article class="case'+(c[6]?' feat':'')+'"><div class="top"><span class="rk">#'+c[0]+'</span><span class="nm">'+c[1]+'</span></div><div class="big">'+c[2]+'<small>'+c[3]+'</small></div><p>'+c[4]+'</p><p class="how"><strong>Playbook:</strong> '+c[5]+'</p></article>';
+  }).join(''); }
+
+  /* playbook matrix */
+  var cols=['Shopify','Canva','Atlassian','Supabase','Stripe','HubSpot','Context7','Booking'];
+  var plays=[
+    ['First to launch on every new entry point',[0,1,0,0,0,1,0,1]],
+    ['One-click OAuth, no setup',[0,1,1,0,0,0,0,0]],
+    ['Few, focused tools for one high-frequency task',[0,1,0,0,0,0,1,0]],
+    ['First draft in chat, finish in own product',[1,1,0,0,0,0,0,1]],
+    ['Structured data Agents can parse',[1,0,0,0,1,0,0,0]],
+    ['Publicly disclose usage data',[0,1,1,1,0,0,0,0]]
+  ];
+  var pm=document.getElementById('playMatrix');
+  if(pm){
+    var h='<thead><tr><th>Playbook</th>'+cols.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr></thead><tbody>';
+    plays.forEach(function(p){ h+='<tr><td>'+p[0]+'</td>'+p[1].map(function(v,i){return '<td><span class="dot'+(v?'':' o')+'" role="img" aria-label="'+cols[i]+(v?': yes':': no')+'"></span></td>'}).join('')+'</tr>'; });
+    pm.innerHTML=h+'</tbody>';
+  }
+
+  /* funnel */
+  var f=document.getElementById('funnel');
+  if(f){
+    var steps=[['Reachable',1],['Impression 30%',.3],['Click 20%',.2],['Authorize 50%',.5],['Call 60%',.6],['Retain 50%',.5]];
+    var v=800000, out=[];
+    steps.forEach(function(s,i){ v = i===0 ? 800000 : v*s[1]; out.push([s[0],v]); });
+    f.innerHTML=out.map(function(o){
+      var w=Math.max(Math.sqrt(o[1]/800000)*100,0.8);
+      return '<div class="fs"><span>'+o[0]+'</span><div class="bar" style="width:'+w+'%"></div><span class="v">'+Math.round(o[1]).toLocaleString('en-US')+'</span></div>';
+    }).join('') + '<p class="note" style="margin-top:6px">Bar widths use a square-root scale so later steps stay visible; resulting MAA per Agent is ~7,200.</p>';
+  }
+
+  /* rail highlight */
+  try{
+    var links=[].slice.call(document.querySelectorAll('.rail a'));
+    var map={}; links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('on')}); var a=map[e.target.id]; if(a){a.classList.add('on'); if(window.innerWidth<=960){ var ol=a.closest('ol'); ol.scrollLeft=a.offsetLeft-ol.clientWidth/2+a.offsetWidth/2; }} } });
+    },{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s)});
+  }catch(e){}
+})();
+</script><script>
+(function(){
+  var cur=null;
+  function open(id){var d=document.getElementById(id);if(!d)return;if(cur&&cur!==d&&cur.open)cur.close();try{d.showModal()}catch(e){d.setAttribute('open','')}d.scrollTop=0;cur=d;window.dispatchEvent(new Event('resize'))}
+  document.querySelectorAll('[data-open]').forEach(function(b){b.addEventListener('click',function(){open(b.getAttribute('data-open'))})});
+  document.querySelectorAll('dialog.modal').forEach(function(d){
+    d.addEventListener('click',function(e){if(e.target===d)d.close()});
+    d.querySelectorAll('[data-close]').forEach(function(x){x.addEventListener('click',function(){d.close()})});
+  });
+  var h=(location.hash||'').slice(1);if(h&&document.getElementById('m-'+h))open('m-'+h);
+})();
+</script>
+
+</body>
+</html>
