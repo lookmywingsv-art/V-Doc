@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>抢占 Agent 广告新入口</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=TikTok+Sans:opsz,wght@12..36,400..900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --bg:#ffffff; --surface:#ffffff; --soft:#f5f5f7; --soft2:#ebebee; --ink:#121212; --muted:#62666d; --line:#e4e4e8;
+  --accent:#00858a; --accent-soft:#e2f6f6; --hot:#e8174a; --hot-soft:#ffe9ee; --warn:#9a5b00; --warn-soft:#fdf1dc;
+  --good:#1a7f4b; --bar:#c5ccd3; --glow:transparent; --glow2:transparent;
+  --night:#000000; --night-2:#141416; --night-ink:#ffffff; --night-muted:#a1a1a6; --night-line:rgba(255,255,255,.14);
+  --cyan:#25f4ee; --red:#fe2c55;
+  --f-display:"TikTok Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-body:"TikTok Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-num:"TikTok Sans","Noto Sans SC",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0a0a0b; --surface:#121214; --soft:#18181b; --soft2:#232327; --ink:#f4f4f5; --muted:#a1a1aa; --line:#2a2a2f;
+  --accent:#25f4ee; --accent-soft:#0d2a2a; --hot:#fe2c55; --hot-soft:#3a0f1a; --warn:#ffb648; --warn-soft:#33250e;
+  --good:#5be3a0; --bar:#3a3f46; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0a0b; --surface:#121214; --soft:#18181b; --soft2:#232327; --ink:#f4f4f5; --muted:#a1a1aa; --line:#2a2a2f;
+  --accent:#25f4ee; --accent-soft:#0d2a2a; --hot:#fe2c55; --hot-soft:#3a0f1a; --warn:#ffb648; --warn-soft:#33250e;
+  --good:#5be3a0; --bar:#3a3f46; color-scheme:dark}
+*{box-sizing:border-box}
+
+a{color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:0 64px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+@media (max-width:960px){.wrap{grid-template-columns:minmax(0,1fr);gap:0;padding-inline:16px}}
+/* rail */
+.rail{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:40px;max-height:100vh;overflow:auto}
+.rail .lab{font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;font-size:13.5px}
+.rail a{display:block;padding:5px 10px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none;line-height:1.45}
+.rail a:hover,.rail a:focus-visible{color:var(--ink);border-color:var(--ink)}
+.rail a.on{color:var(--accent);border-color:var(--accent);font-weight:500}
+.rail .grp{margin-top:12px;font-size:11.5px;color:var(--muted);padding-left:12px;letter-spacing:.08em}
+@media (max-width:960px){
+  .rail{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0;max-height:none;border-bottom:1px solid var(--line);margin-inline:-16px;padding-inline:16px}
+  .rail .lab,.rail .grp{display:none}
+  .rail ol{display:flex;overflow-x:auto;gap:4px;scrollbar-width:none}
+  .rail a{white-space:nowrap;border-left:0;border-bottom:2px solid transparent;padding:6px 8px}
+  .rail a.on{border-color:var(--accent)}
+}
+main{min-width:0}
+/* hero */
+.hero{padding-block:56px 32px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:12.5px;letter-spacing:.14em;color:var(--accent);font-weight:500}
+h1{font-family:var(--f-display);font-weight:900;font-size:clamp(30px,5vw,48px);line-height:1.2;margin:12px 0 16px;text-wrap:balance}
+.lede{font-size:17.5px;color:var(--muted);max-width:44em;margin:0}
+.meta{margin-top:18px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 18px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:32px}
+@media (max-width:720px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--surface);padding:16px 18px;display:grid;gap:4px;align-content:start}
+.kpi b{font-family:var(--f-num);font-size:clamp(22px,3vw,30px);font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--muted);line-height:1.5}
+/* sections */
+section{padding-block:48px 8px;scroll-margin-top:56px}
+.part{font-family:var(--f-num);font-size:12px;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+h2{font-family:var(--f-display);font-weight:900;font-size:clamp(24px,3.2vw,32px);line-height:1.3;margin:0 0 14px;text-wrap:balance}
+h3{font-size:18.5px;font-weight:700;margin:32px 0 10px;text-wrap:balance}
+p{margin:0 0 14px;max-width:46em}
+.thesis{font-size:18px;font-weight:500;border-left:3px solid var(--accent);padding-left:16px;margin:4px 0 20px;max-width:44em}
+.note{font-size:13.5px;color:var(--muted)}
+.tag{display:inline-block;font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--muted);vertical-align:2px;white-space:nowrap}
+.tag.est{background:var(--warn-soft);color:var(--warn)}
+.tag.rw{background:var(--accent-soft);color:var(--accent)}
+.tag.hot{background:var(--hot-soft);color:var(--hot)}
+.implication{background:var(--accent-soft);padding:14px 18px;margin:20px 0;max-width:46em}
+.implication strong{color:var(--accent)}
+/* lists */
+ol.num{counter-reset:n;list-style:none;padding:0;margin:0 0 16px;display:grid;gap:14px;max-width:46em}
+ol.num>li{counter-increment:n;display:grid;grid-template-columns:32px minmax(0,1fr);gap:4px}
+ol.num>li::before{content:counter(n);font-family:var(--f-num);font-weight:700;color:var(--accent);font-size:15px;line-height:1.75}
+ul.plain{padding-left:1.2em;margin:0 0 16px;max-width:46em}
+ul.plain li{margin-bottom:6px}
+/* tables */
+.tbl{overflow-x:auto;margin:12px 0 20px;border:1px solid var(--line);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-weight:500;color:var(--muted);font-size:12.5px;background:var(--soft);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap}
+/* figure */
+figure{margin:20px 0 24px;background:var(--surface);border:1px solid var(--line);padding:18px 18px 14px}
+figcaption{font-size:15px;font-weight:700;margin-bottom:4px}
+figure .sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+figure .src{font-size:12px;color:var(--muted);margin-top:10px}
+.scroll{overflow-x:auto}
+svg text{font-family:var(--f-body)}
+/* range bars */
+.rows{display:grid;gap:10px}
+.rrow{display:grid;grid-template-columns:110px minmax(0,1fr) 112px;gap:12px;align-items:center;font-size:13.5px}
+@media (max-width:520px){.rrow{grid-template-columns:76px minmax(0,1fr) 92px;font-size:12.5px}}
+.track{position:relative;height:16px;background:var(--soft)}
+.track .rng{position:absolute;top:0;bottom:0;background:var(--accent);opacity:.85}
+.track .pt{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--accent)}
+.rrow .v{font-family:var(--f-num);font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+.axis{display:grid;grid-template-columns:110px minmax(0,1fr) 112px;gap:12px;font-family:var(--f-num);font-size:11px;color:var(--muted)}
+@media (max-width:520px){.axis{grid-template-columns:76px minmax(0,1fr) 92px}}
+.axis .ticks{position:relative;height:16px}
+.axis .ticks span{position:absolute;transform:translateX(-50%)}
+/* layer stack */
+.stack{display:grid;gap:6px}
+.layer{display:grid;grid-template-columns:120px minmax(0,1fr) minmax(0,1.2fr);gap:14px;align-items:center;padding:12px 14px;border:1px solid var(--line);background:var(--surface)}
+.layer .k{font-weight:700}
+.layer .k small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.layer .d{font-size:13.5px;color:var(--muted)}
+.layer .e{font-size:13px}
+.layer.base{border-color:var(--accent);background:var(--accent-soft)}
+@media (max-width:640px){.layer{grid-template-columns:minmax(0,1fr)}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px;font-size:13.5px}
+.flow span{border:1px solid var(--line);background:var(--surface);padding:6px 10px}
+.flow i{font-style:normal;color:var(--muted)}
+/* trend chips */
+.trend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.trend{grid-template-columns:minmax(0,1fr)}}
+.tc{border:1px solid var(--line);background:var(--surface);padding:14px 16px;display:grid;gap:6px;align-content:start}
+.tc .h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700}
+.arrow{font-family:var(--f-num);font-size:13px;font-weight:700;white-space:nowrap}
+.up{color:var(--good)} .dn{color:var(--hot)} .fl{color:var(--warn)}
+.tc p{font-size:13.5px;color:var(--muted);margin:0}
+/* matrix 2x2 */
+.m2{display:grid;grid-template-columns:90px minmax(0,1fr) minmax(0,1fr);gap:6px;font-size:13.5px}
+.m2 .ax{font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.m2 .cell{padding:14px;border:1px solid var(--line);background:var(--surface);min-height:110px}
+.m2 .cell b{display:block;margin-bottom:4px}
+.m2 .deep{background:var(--accent-soft);border-color:var(--accent)}
+.m2 .coop{background:var(--hot-soft);border-color:var(--hot)}
+@media (max-width:560px){.m2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.m2 .ax.y{display:none}.m2 .corner{display:none}}
+/* cases */
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.cases{grid-template-columns:minmax(0,1fr)}}
+.case{border:1px solid var(--line);background:var(--surface);padding:16px;display:grid;gap:8px;align-content:start}
+.case .top{display:flex;gap:12px;align-items:baseline}
+.case .rk{font-family:var(--f-num);font-weight:700;color:var(--muted);font-size:13px}
+.case .nm{font-weight:700;font-size:16px}
+.case .big{font-family:var(--f-num);font-size:24px;font-weight:700;color:var(--accent);line-height:1.2}
+.case .big small{font-family:var(--f-body);font-size:13px;color:var(--muted);font-weight:400;margin-left:6px}
+.case p{font-size:13.5px;margin:0;color:var(--muted)}
+.case .how{font-size:13.5px;margin:0;color:var(--ink)}
+.case.feat{border-color:var(--accent)}
+/* dot matrix */
+.dm table td,.dm table th{text-align:center;white-space:nowrap}
+.dm table td:first-child,.dm table th:first-child{text-align:left;white-space:normal;min-width:170px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.dot.o{background:transparent;border:1.5px solid var(--line)}
+/* canva timeline */
+.tl{display:grid;gap:0;border-left:2px solid var(--line);margin-left:6px}
+.tl .it{position:relative;padding:0 0 16px 20px}
+.tl .it::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.tl .dt{font-family:var(--f-num);font-size:12.5px;color:var(--muted)}
+/* analogy */
+.vs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.vs{grid-template-columns:minmax(0,1fr)}}
+.who{border:1px solid var(--line);background:var(--surface);padding:16px;display:grid;gap:6px;align-content:start}
+.who .role{font-size:12px;letter-spacing:.1em}
+.who.win .role{color:var(--good)} .who.lose .role{color:var(--hot)} .who.ref .role{color:var(--warn)}
+.who b{font-size:16px}
+.who p{font-size:13.5px;color:var(--muted);margin:0}
+/* phases */
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.phases{grid-template-columns:minmax(0,1fr)}}
+.ph{border:1px solid var(--line);background:var(--surface);padding:16px}
+.ph.now{border-color:var(--accent);background:var(--accent-soft)}
+.ph .when{font-family:var(--f-num);font-weight:700}
+.ph .what{font-weight:700;margin:2px 0 8px}
+.ph ul{margin:0;padding-left:1.1em;font-size:13.5px}
+/* funnel */
+.fun{display:grid;gap:6px}
+.fs{display:grid;grid-template-columns:110px minmax(0,1fr) 92px;gap:12px;align-items:center;font-size:13.5px}
+.fs .bar{height:22px;background:var(--accent);opacity:.85;min-width:3px}
+.fs .v{font-family:var(--f-num);text-align:right;font-size:12.5px}
+@media (max-width:520px){.fs{grid-template-columns:76px minmax(0,1fr) 72px;font-size:12.5px}}
+/* plays */
+.plays{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:12px 0 20px}
+@media (max-width:700px){.plays{grid-template-columns:minmax(0,1fr)}}
+.play{border-top:3px solid var(--accent);background:var(--surface);padding:14px 16px;border-inline:1px solid var(--line);border-bottom:1px solid var(--line)}
+.play b{display:block;margin-bottom:4px}
+.play p{font-size:13.5px;color:var(--muted);margin:0}
+/* faq */
+details{border:1px solid var(--line);background:var(--surface);margin-bottom:8px}
+summary{cursor:pointer;padding:12px 16px;font-weight:500;list-style-position:inside}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+details>div{padding:0 16px 14px;font-size:14.5px}
+details p,details ol{max-width:none}
+.src-list{font-size:13.5px;columns:2;column-gap:32px;padding-left:1.1em}
+@media (max-width:700px){.src-list{columns:1}}
+.src-list li{break-inside:avoid;margin-bottom:6px}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+
+/* takeaways */
+.takeaways{padding-top:56px}
+.tk-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:8px}
+@media (max-width:760px){.tk-grid{grid-template-columns:minmax(0,1fr)}}
+.tk{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px 22px 20px;display:grid;gap:8px;align-content:start;min-width:0}
+.tk::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--accent),transparent)}
+.tk.hot::before{background:linear-gradient(90deg,var(--hot),transparent)}
+.tk-n{font-family:var(--f-num);font-weight:700;font-size:44px;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--accent)}
+.tk.hot .tk-n{-webkit-text-stroke-color:var(--hot)}
+.tk h3{margin:4px 0 2px;font-family:var(--f-display);font-weight:900;font-size:21px;line-height:1.4}
+.tk p{font-size:14.5px;color:var(--muted);margin:0;max-width:none}
+/* built-in agent scenes */
+.scenes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:6px 0 10px}
+@media (max-width:760px){.scenes{grid-template-columns:minmax(0,1fr)}}
+.scene{background:var(--surface);border:1px solid var(--line);padding:16px 18px;display:grid;gap:6px;align-content:start;min-width:0}
+.scene .who-tag{font-family:var(--f-num);font-size:11.5px;letter-spacing:.12em;color:var(--accent)}
+.scene b{font-size:16px;line-height:1.5}
+.scene p{font-size:14px;color:var(--muted);margin:0;max-width:none}
+footer{border-top:0;position:relative}
+footer::before{content:"";position:absolute;top:0;left:0;width:120px;height:2px;background:linear-gradient(90deg,var(--accent),var(--hot))}
+@media (prefers-reduced-motion:reduce){.case,.tc,.who,.ph,.play,.scene{transition:none}.case:hover,.tc:hover,.who:hover,.ph:hover,.play:hover,.scene:hover{transform:none}}
+/* apps demos */
+details.apps{margin:8px 0 20px}
+details.apps>summary{color:var(--accent)}
+.demos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:12px 0}
+@media (max-width:760px){.demos{grid-template-columns:minmax(0,1fr)}}
+.demo{min-width:0;display:grid;gap:10px;align-content:start;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--soft)}
+.demo-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.demo p{font-size:13.5px;margin:0;color:var(--muted)}
+.chat{display:grid;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.bub.u{justify-self:end;max-width:85%;background:var(--accent-soft);color:var(--ink);font-size:13px;line-height:1.5;padding:8px 12px;border-radius:14px 14px 4px 14px}
+.card{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;font-size:12.5px;background:var(--surface);box-shadow:0 6px 20px -14px var(--accent)}
+.map{position:relative;height:120px;border-radius:8px;background:repeating-linear-gradient(0deg,transparent 0 22px,var(--line) 22px 23px),repeating-linear-gradient(90deg,transparent 0 30px,var(--line) 30px 31px),var(--soft)}
+.map i{position:absolute;font-style:normal;font-family:var(--f-num);font-size:11px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:1px 7px;transform:translate(-50%,-50%)}
+.map i.on{background:var(--hot);color:var(--surface);border-color:var(--hot)}
+.row{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}.row b{color:var(--ink);font-family:var(--f-num)}
+.btns{display:flex;gap:6px;flex-wrap:wrap}.btns span{border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px}
+.btns span.pri{background:var(--accent);border-color:var(--accent);color:var(--surface);font-weight:700}
+.li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.li b{font-family:var(--f-num)}.qty{font-family:var(--f-num);border:1px solid var(--line);border-radius:6px;padding:0 6px;color:var(--muted)}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.thumbs i{aspect-ratio:3/4;max-width:100%;border-radius:6px;background:linear-gradient(160deg,var(--warn-soft),var(--hot-soft));border:2px solid transparent}
+.thumbs i.on{border-color:var(--accent)}
+.seg{display:flex;gap:4px}.seg span{font-size:11.5px;border:1px solid var(--line);border-radius:6px;padding:1px 8px}.seg span.on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.bars{display:flex;align-items:flex-end;gap:6px;height:90px;border-bottom:1px solid var(--line)}
+.bars i{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent-soft))}
+
+/* ===== V5 shell ===== */
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 0}
+.shell{max-width:1200px;margin:0 auto;padding-inline:32px}
+@media (max-width:720px){.shell{padding-inline:16px}}
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:color-mix(in srgb,var(--night) 82%,transparent);backdrop-filter:saturate(1.6) blur(16px);-webkit-backdrop-filter:saturate(1.6) blur(16px);border-bottom:1px solid var(--night-line);color:var(--night-ink)}
+.nav .shell{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.01em;white-space:nowrap}
+.brand i{width:10px;height:10px;border-radius:50%;background:var(--night-ink);box-shadow:-3px 0 0 var(--cyan),3px 0 0 var(--red)}
+.brand span{color:var(--night-muted);font-weight:500}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0;overflow-x:auto;scrollbar-width:none}
+.nav a{display:block;padding:7px 14px;border-radius:999px;color:var(--night-muted);text-decoration:none;font-size:14px;font-weight:500;white-space:nowrap}
+.nav a:hover,.nav a:focus-visible{color:var(--night-ink);background:rgba(255,255,255,.08)}
+@media (max-width:640px){.brand span{display:none}.nav a{padding:6px 10px;font-size:13px}}
+
+.hero{background:var(--night);color:var(--night-ink);overflow:hidden;position:relative;border-bottom:0;padding:0}
+.hero::before{content:"";position:absolute;width:760px;height:760px;right:-220px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(37,244,238,.16),transparent 62%);pointer-events:none}
+.hero::after{content:"";position:absolute;width:640px;height:640px;right:120px;bottom:-420px;border-radius:50%;background:radial-gradient(circle,rgba(254,44,85,.14),transparent 62%);pointer-events:none}
+.hero .shell{position:relative;z-index:1;padding-block:96px 72px;display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center}
+@media (max-width:960px){.hero .shell{grid-template-columns:minmax(0,1fr);padding-block:64px 48px;gap:40px}}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--night-muted);border:1px solid var(--night-line);border-radius:999px;padding:6px 14px}
+.pill b{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+.hero h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,7.4vw,96px);line-height:1.04;letter-spacing:-.035em;margin:24px 0 24px;text-wrap:balance}
+.hero h1 em{font-style:normal;text-shadow:-.035em -.02em 0 var(--cyan),.035em .02em 0 var(--red)}
+.claim{font-size:clamp(19px,2.2vw,24px);font-weight:700;line-height:1.45;margin:0 0 14px;max-width:24em;letter-spacing:-.01em}
+.hero .lede{font-size:16px;color:var(--night-muted);margin:0;max-width:36em}
+.kpi-row{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--night-line);margin-top:16px}
+@media (max-width:760px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.k{padding:24px 24px 0 0;display:grid;gap:6px;align-content:start;min-width:0}
+.k+.k{padding-left:24px;border-left:1px solid var(--night-line)}
+@media (max-width:760px){.k:nth-child(3){border-left:0;padding-left:0}}
+.k b{font-size:clamp(30px,4vw,48px);font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.k span{font-size:13.5px;color:var(--night-muted);line-height:1.5}
+.k .est{font-size:11px;color:#ffc970;border:1px solid rgba(255,201,112,.4);border-radius:999px;padding:0 7px;margin-left:4px;white-space:nowrap}
+
+/* agent conversation mock */
+.mock{background:var(--night-2);border:1px solid var(--night-line);border-radius:24px;padding:20px;display:grid;gap:12px;font-size:14px;box-shadow:0 40px 100px -40px rgba(37,244,238,.25)}
+.mock-top{display:flex;align-items:center;gap:8px;color:var(--night-muted);font-size:12.5px}
+.mock-top i{width:8px;height:8px;border-radius:50%;background:#3a3a3f}
+.mock-top em{font-style:normal;margin-left:auto}
+.msg-u{justify-self:end;max-width:86%;background:#2a2a2e;color:var(--night-ink);border-radius:18px 18px 4px 18px;padding:10px 14px;line-height:1.55}
+.tool{border:1px solid var(--night-line);border-radius:16px;padding:14px;display:grid;gap:10px;background:#0c0c0e}
+.tool-h{display:flex;align-items:center;gap:10px;font-weight:700}
+.tool-h i{width:26px;height:26px;border-radius:8px;background:#fff;position:relative;flex:none}
+.tool-h i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:#000;box-shadow:-2px 0 0 var(--cyan),2px 0 0 var(--red)}
+.tool-h small{margin-left:auto;font-weight:500;font-size:12px;color:#5be3a0}
+.tool-r{display:flex;justify-content:space-between;gap:12px;color:var(--night-muted);font-size:13px}
+.tool-r b{color:var(--night-ink);font-weight:700;font-variant-numeric:tabular-nums}
+.tool-b{display:flex;gap:8px}
+.tool-b span{border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;border:1px solid var(--night-line);color:var(--night-ink)}
+.tool-b span.pri{background:var(--red);border-color:var(--red)}
+.msg-a{color:var(--night-muted);line-height:1.6;font-size:13.5px}
+
+/* sections */
+.blk{padding-block:112px 120px}
+@media (max-width:720px){.blk{padding-block:72px 80px}}
+.blk.alt{background:var(--soft)}
+.blk-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:48px}
+.kicker{font-size:14px;font-weight:700;color:var(--muted);letter-spacing:.02em;margin-bottom:12px;display:flex;gap:10px;align-items:center}
+.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.blk-h h2{font-family:var(--f-display);font-weight:900;font-size:clamp(34px,5vw,60px);line-height:1.08;letter-spacing:-.03em;margin:0;text-wrap:balance}
+.blk-h p{margin:0;color:var(--muted);font-size:16px;max-width:26em}
+.tiles{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:900px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.tiles.big,.tiles.row3{grid-template-columns:repeat(3,minmax(0,1fr))}.tiles.row3 .tile{padding:22px}.tiles.row3 .tile-t{font-size:20px}.tiles.big .tile{padding:22px;min-height:240px}.tiles.big .tile-t{font-size:20px}}
+@media (max-width:560px){.tiles,.tiles.big,.tiles.row3{grid-template-columns:minmax(0,1fr)}.tile,.tiles.big .tile{min-height:150px;gap:16px;padding:22px}.dark .tile{min-height:120px}}
+.tile{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-rows:auto 1fr auto;gap:28px;min-height:240px;padding:28px;border-radius:24px;background:var(--soft);color:var(--ink);transition:background .25s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
+.alt .tile{background:var(--surface)}
+.tile:hover{background:var(--soft2);transform:translateY(-4px)}
+.alt .tile:hover{background:var(--surface);box-shadow:0 24px 60px -32px rgba(0,0,0,.25)}
+.tile:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.tile-n{font-size:15px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.tile-t,.hero h1,.blk-h h2,.tk2 h3,.claim,.modal-bar b,.modal-body h3,.thesis,figcaption{word-break:keep-all;overflow-wrap:anywhere}
+.tile-t{font-family:var(--f-display);font-size:clamp(22px,2.2vw,27px);font-weight:800;line-height:1.3;letter-spacing:-.02em;text-wrap:balance;align-self:end}
+.tile-go{justify-self:end;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line);color:var(--ink);transition:background .25s,color .25s,border-color .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
+.tile:hover .tile-go{background:var(--ink);border-color:var(--ink);color:var(--bg);transform:rotate(45deg)}
+.tiles.big .tile{min-height:320px}
+.tiles.big .tile-t{font-size:clamp(24px,2.6vw,32px)}
+.tiles.big .tile:nth-child(1) .tile-n{color:var(--cyan)}
+.tiles.big .tile:nth-child(2) .tile-n{color:var(--red)}
+
+/* takeaways */
+.dark{background:var(--night);color:var(--night-ink)}
+.dark .kicker{color:var(--night-muted)}
+.tk-blk .kicker::before{background:var(--red)}
+.dark .blk-h p{color:var(--night-muted)}
+.tk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--night-line)}
+@media (max-width:820px){.tk-list{grid-template-columns:minmax(0,1fr)}}
+.tk2{padding:40px 40px 44px 0;border-bottom:1px solid var(--night-line);display:grid;gap:14px;align-content:start;min-width:0}
+.tk2:nth-child(even){padding-left:40px;padding-right:0;border-left:1px solid var(--night-line)}
+@media (max-width:820px){.tk2,.tk2:nth-child(even){padding:32px 0;border-left:0}}
+.tk2-n{font-size:15px;font-weight:700;color:var(--cyan);font-variant-numeric:tabular-nums}
+.tk2.hot .tk2-n{color:var(--red)}
+.tk2 h3{font-family:var(--f-display);font-size:clamp(23px,2.4vw,30px);font-weight:800;line-height:1.3;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.tk2 p{margin:0;color:var(--night-muted);font-size:16px;line-height:1.75;max-width:34em}
+.sub-h{font-size:22px;font-weight:800;letter-spacing:-.01em;margin:72px 0 20px}
+.dark .tile{background:var(--night-2);color:var(--night-ink)}
+.tk-blk .tile{min-height:180px}
+.dark .kicker::before{background:var(--cyan)}
+.dark.tk-blk .kicker::before{background:var(--red)}
+.dark .tile:hover{background:#1f1f22}
+.dark .tile-n{color:var(--night-muted)}
+.dark .tile-go{border-color:var(--night-line);color:var(--night-ink)}
+.dark .tile:hover .tile-go{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.dark .tile:focus-visible{outline-color:var(--night-ink)}
+.site-foot{background:var(--night);color:var(--night-muted);border-top:1px solid var(--night-line);font-size:13px}
+.site-foot .shell{padding-block:28px 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.linkbtn{all:unset;cursor:pointer;color:var(--night-ink);font-weight:700;border-bottom:1px solid currentColor}
+.linkbtn:focus-visible{outline:2px solid var(--night-ink);outline-offset:3px}
+
+/* modal */
+dialog.modal{width:min(1040px,calc(100vw - 32px));max-height:calc(100vh - 48px);padding:0;border:0;border-radius:28px;background:var(--bg);color:var(--ink);box-shadow:0 50px 140px -30px rgba(0,0,0,.55);overflow:auto;overscroll-behavior:contain}
+dialog.modal[open]{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+dialog.modal::backdrop{background:rgba(0,0,0,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.modal-bar{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:14px;padding:18px 28px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.modal-n{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.modal-bar b{font-size:20px;font-weight:800;letter-spacing:-.015em;flex:1;min-width:0}
+.x{all:unset;cursor:pointer;width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--soft);color:var(--ink)}
+.x:hover,.x:focus-visible{background:var(--ink);color:var(--bg)}
+.modal-body{padding:16px 40px 24px}
+.modal-foot{padding:8px 40px 36px}
+.next{all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center;font-weight:700;font-size:15px;padding:12px 20px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.next:hover{opacity:.86}.next:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:640px){dialog.modal{width:100vw;max-width:100vw;max-height:100%;height:100%;border-radius:0}.modal-body{padding:8px 16px 16px}.modal-foot{padding:8px 16px 32px}.modal-bar{padding:12px 16px}.modal-bar b{font-size:17px}}
+
+/* content inside modules: flat, quiet */
+.modal-body h3{font-size:21px;font-weight:800;letter-spacing:-.015em;margin:40px 0 12px}
+.modal-body h3:first-child{margin-top:20px}
+.modal-body p,.modal-body ol.num,.modal-body ul.plain{max-width:44em}
+.thesis{font-size:21px;font-weight:700;line-height:1.5;letter-spacing:-.01em;border:0;padding:0;margin:20px 0 24px;max-width:30em}
+.implication{background:var(--soft);border-radius:16px;padding:18px 22px;box-shadow:none}
+.implication strong{color:var(--ink)}
+.part{display:none}
+figure{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px 24px 18px;box-shadow:none}
+figcaption{font-size:16px;font-weight:800}
+.tbl{border-radius:16px;border:1px solid var(--line)}
+th{background:var(--soft);color:var(--muted);font-weight:700}
+details{border-radius:16px}
+.layer,.tc,.case,.who,.ph,.play,.m2 .cell,.scene,.demo{border-radius:16px;border-color:transparent;background:var(--soft)}
+.layer.base,.m2 .deep{background:var(--accent-soft);border-color:transparent}
+.m2 .coop{background:var(--hot-soft);border-color:transparent}
+.case.feat,.ph.now{background:var(--soft);border:0;box-shadow:inset 0 0 0 2px var(--ink)}
+.case .big{color:var(--ink);font-weight:800;letter-spacing:-.02em}
+.case .rk,.dt,.ph .when,.arrow{font-variant-numeric:tabular-nums}
+.play{box-shadow:none;border:0}
+.flow span{border-radius:999px;border-color:var(--line);background:var(--surface)}
+.track{border-radius:999px;background:var(--soft2)}
+.track .rng{background:var(--accent);opacity:1;border-radius:999px}
+.fs .bar{background:var(--accent);opacity:1;border-radius:0 6px 6px 0}
+.ol-num>li::before,ol.num>li::before{color:var(--ink);font-weight:800}
+.tag{border-radius:999px}
+.chat,.card{border-radius:14px}
+.case:hover,.tc:hover,.who:hover,.ph:hover,.play:hover,.scene:hover{transform:none;box-shadow:none}
+.case.feat:hover,.ph.now:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+footer{display:none}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){.tile,.tile-go{transition:none}.tile:hover{transform:none}dialog.modal[open]{animation:none}}
+</style>
+<style>body{margin:0}</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="页面导航"><div class="shell">
+  <div class="brand"><i aria-hidden="true"></i>TikTok for Business<span>· 3P Agent 策略</span></div>
+  <ul><li><a href="#trends">行业趋势</a></li><li><a href="#bench">标杆与历史</a></li><li><a href="#takeaways">Key Takeaways</a></li></ul>
+</div></nav>
+<header class="hero"><div class="shell">
+  <div>
+    <span class="pill"><b></b>XFN 对齐材料 · 2026 年 10 月</span>
+    <h1>抢占 <em>Agent</em><br>广告新入口</h1>
+    <p class="claim">主流 Agent 正成为新入口，TikTok 要成为 Agent 首选。</p>
+    <p class="lede">广告主正把看数、诊断、做素材、建计划等高频工作搬进 ChatGPT、Gemini、Claude、豆包等通用 Agent，以及 Canva、Shopify 等工作软件的内置 Agent。</p>
+  </div>
+  <div class="kpi-row">
+    <div class="k"><b>12 亿</b><span>ChatGPT 周活（2026-09-29）</span></div>
+    <div class="k"><b>7 家</b><span>一年内上线官方 MCP 的广告平台，3 家支持读写</span></div>
+    <div class="k"><b>9.07 万</b><span>TikTok MCP MAA（2026 年 9 月底）</span></div>
+    <div class="k"><b>11 个</b><span>Agent 覆盖可触达广告主 90.1%、预算 91.7%<em class="est">估算</em></span></div>
+  </div>
+</div></header>
+<main>
+<section class="blk dark" id="trends"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">第一部分</div><h2>行业趋势</h2></div><p>六个正在发生的变化。点开任一模块查看数据和案例。</p></div>
+  <div class="tiles row3"><button class="tile" type="button" data-open="m-t1" aria-haspopup="dialog"><span class="tile-n">01</span><span class="tile-t">工作正迁移到<wbr>通用 Agent</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t2" aria-haspopup="dialog"><span class="tile-n">02</span><span class="tile-t">MCP 已成广告平台标配</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t3" aria-haspopup="dialog"><span class="tile-n">03</span><span class="tile-t">竞争焦点从上架<wbr>转向实际使用</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-forms" aria-haspopup="dialog"><span class="tile-n">04</span><span class="tile-t">Agent 内的<wbr>六种交互形态</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-t4" aria-haspopup="dialog"><span class="tile-n">05</span><span class="tile-t">广告投放与<wbr>电商交易打通</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-rivals" aria-haspopup="dialog"><span class="tile-n">06</span><span class="tile-t">竞品布局：多数已开放写入</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+<section class="blk dark" id="bench"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">第二部分</div><h2>标杆与历史</h2></div><p>谁已经做出了规模，历史上哪一次最像现在。</p></div>
+  <div class="tiles big"><button class="tile" type="button" data-open="m-cases" aria-haspopup="dialog"><span class="tile-n">07</span><span class="tile-t">十大<wbr>标杆案例</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-canva" aria-haspopup="dialog"><span class="tile-n">08</span><span class="tile-t">Canva 在 ChatGPT 的做法</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-analogy" aria-haspopup="dialog"><span class="tile-n">09</span><span class="tile-t">历史上最像<wbr>搜索引擎时代</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+<section class="blk dark tk-blk" id="takeaways"><div class="shell">
+  <div class="blk-h"><div><div class="kicker">Key Takeaways</div><h2>四个关键判断</h2></div><p>给管理层的四句话，每一条都对应一个具体动作。</p></div>
+  <div class="tk-list"><article class="tk2"><span class="tk2-n">01</span><h3>Agent 会是下一个"电商 + 广告"的超级入口</h3><p>种草、下单、投放，未来一个对话就能走完。ChatGPT 已经边卖广告边接支付，Shopify 接一次就铺满各大 Agent。TikTok 内容、商品、投放三样都有，这是我们最该抢的牌：把商品、素材、投放和转化数据一起接进 Agent，率先跑通"对话即成交"。</p></article><article class="tk2"><span class="tk2-n">02</span><h3>谁先被 Agent 想到，谁就赢</h3><p>MCP 现在家家都有，决胜点是 Agent 能不能第一时间找到 TikTok、用好 TikTok。这就是 Agent 时代的 SEO：工具描述写清楚，数据做结构化，首发位和默认推荐全力争取，把"调用命中率"当北极星指标来运营。</p></article><article class="tk2"><span class="tk2-n">03</span><h3>分层推进 Agent 合作，客户统一沉淀到 Ads Manager</h3><p>ChatGPT、Gemini 先完成标准接入，保证能被调用；Claude、Canva、Shopify、豆包推进深度集成，争取默认推荐和联合推广。Agent 里负责出方案、出草稿，最终确认、付款和精细调整回到 Ads Manager 完成，广告主账户和数据都留在 TikTok。</p></article><article class="tk2 hot"><span class="tk2-n">04</span><h3>Q4 上线四个高频任务的"一句话 Skill"</h3><p>目前能在 3P Agent 里直接投放的广告平台还不多。Q4 优先把建 Smart+ 计划、素材诊断、调整预算、生成周报做成广告主一句话就能完成的 Skill，配好花费上限和二次确认，用写操作占比和任务成功率衡量效果。</p></article></div>
+  <h3 class="sub-h">怎么落地</h3>
+  <div class="tiles row3"><button class="tile" type="button" data-open="m-strategy" aria-haspopup="dialog"><span class="tile-n">10</span><span class="tile-t">策略主线与四个抓手</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-china" aria-haspopup="dialog"><span class="tile-n">11</span><span class="tile-t">中国出海</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+<button class="tile" type="button" data-open="m-outlook" aria-haspopup="dialog"><span class="tile-n">12</span><span class="tile-t">未来 12–18 个月</span><span class="tile-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+</div>
+</div></section>
+</main>
+<footer class="site-foot"><div class="shell"><span>作者：Vivian（PSO） · 范围：3P Agent，全球，含中国出海 · 数据截至 2026-10</span><button class="linkbtn" type="button" data-open="m-method">方法与来源</button></div></footer>
+<dialog class="modal" id="m-t1" aria-label="工作正迁移到通用 Agent"><div class="modal-bar"><span class="modal-n">01 / 12</span><b>工作正迁移到<wbr>通用 Agent</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>看报表、做诊断、出素材、建计划，越来越多从一句话指令开始，而不是先打开 Ads Manager。中小企业用 AI 已是多数：据 Constant Contact 2026 年 Q1 对 5 国 1,500 多家中小企业的调研，54% 已在用 AI 营销工具，另有 27% 计划年内使用；最常见的用途是趋势分析（45%）、写内容（44%）和做图（40%）。</p>
+<figure>
+<figcaption>各 Agent 可触达广告主：ChatGPT、Canva 明显领先</figcaption>
+<div class="sub">假设全球上线时的可触达量，单位万；条形为 5%–95% 区间，竖线为基准值。各 Agent 有重叠，不能相加。<span class="tag est">模型估算，未公开</span></div>
+<div class="rows" id="reach"></div>
+<div class="axis" style="margin-top:6px"><span></span><div class="ticks" id="reachTicks"></div><span></span></div>
+<div class="src">分母：使用第三方广告相关 Agent 的约 1,628 万活跃广告主；区间为 400 组参数下的 5%–95% 分位。</div>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>Agent</th><th>用户规模（公开）</th><th>企业侧（公开）</th><th>与广告主的关系</th></tr></thead>
+<tbody>
+<tr><td>ChatGPT</td><td class="n">周活 12 亿</td><td>150 万企业客户、700 万办公席位；含 Walmart、Target、Shopify、Etsy</td><td>中小企业和营销人员的常用工具 <span class="tag hot">自营广告</span></td></tr>
+<tr><td>Gemini</td><td class="n">月活 9 亿</td><td>Gemini Enterprise 约 4,200 家公司、800 万付费席位</td><td>经 Workspace、Android、Search 触达；与 Google Ads 绑定 <span class="tag hot">自营广告</span></td></tr>
+<tr><td>Claude</td><td>Marketplace 2,000+ 条目</td><td>企业、代理商和开发者为主</td><td>分析和自动化场景；不卖广告</td></tr>
+<tr><td>豆包</td><td class="n">月活 3.82 亿</td><td>中小商家与运营人员</td><td>字节自家 Agent；出海商家重要入口</td></tr>
+<tr><td>WorkBuddy</td><td class="n">月活 2,000 万</td><td>腾讯办公 Agent</td><td>办公场景使用频次极高</td></tr>
+<tr><td>Canva</td><td>ChatGPT 内月用 2,600 万次</td><td>LLM 引流占总流量两位数百分比</td><td>最贴近素材制作；不卖广告</td></tr>
+<tr><td>Shopify</td><td>—</td><td>电商商家开店与经营平台</td><td>最贴近商品和预算；不卖广告</td></tr>
+</tbody>
+</table></div>
+<p><strong>另一个入口是工作软件内置的 Agent。</strong> Gartner 预测 2026 年 40% 的 SaaS 软件将内置任务型 Agent（软件里自带、只做特定任务的 AI 助手），2025 年还不到 5%。广告主很可能在每天用的软件里，直接通过内置 Agent 调用 TikTok。</p>
+<div class="scenes">
+<div class="scene"><div class="who-tag">场景一 · 电商卖家</div><b>在 Shopify 后台，一句话把新品投上 TikTok</b><p>商家问 Shopify 内置助手 Sidekick："这款新品怎么推？"Sidekick 先调出库存、毛利和近期销量，建议在 TikTok 投放；商家确认后，它直接调用 TikTok 建好 Smart+ 计划并关联商品目录，全程不用离开店铺后台。</p></div>
+<div class="scene"><div class="who-tag">场景二 · 市场或设计人员</div><b>在 Canva 做完视频，顺手投成 TikTok 广告</b><p>设计师用 Canva AI 做好一条 15 秒竖版视频后说："投到 TikTok，每天 50 美元，先跑一周。"内置 Agent 把素材推送到 TikTok、生成广告草稿，再引导回 Ads Manager 确认上线。</p></div>
+</div>
+<p class="note">以上为基于现有产品能力推演的场景示例，具体功能以各平台实际上线为准。两个场景的共同点：广告主不用专门打开 TikTok，在日常使用的软件里就能完成投放。因此 TikTok 要尽早接入这些软件的内置 Agent。</p>
+<p><strong>交互也不会只停留在纯文字对话。</strong> ChatGPT Apps SDK 和 MCP Apps 已经支持在对话里展示可交互的卡片、表格和图表。做得较好的有：Zillow 在 ChatGPT 里展示可拖动的房源地图；Instacart 生成可编辑的购物车，并支持在对话内付款（2025 年 12 月上线，是首个支持 Instant Checkout 的 App）；Hex、Amplitude 在 Claude 里展示可切换维度和时间范围的交互图表，与投放报表最接近。另一边，Google Ask Advisor、Amazon Ads Agent 把对话能力放进了广告后台。两种形态会相互融合（作者判断）。</p>
+<details class="apps">
+<summary>展开：对话内交互卡片的四个标杆案例（附示意图）</summary>
+<div>
+<p class="note">示意图按各家公开演示重绘，用来说明交互方式，不是产品真实截图。官方截图见 <a href="https://techcrunch.com/2025/10/06/openai-launches-apps-inside-of-chatgpt/" target="_blank" rel="noopener">TechCrunch 报道</a>（Zillow）和 <a href="https://claude.com/blog/interactive-tools-in-claude" target="_blank" rel="noopener">Claude 官方博客</a>（Hex 等）。</p>
+<div class="demos">
+<div class="demo">
+<div class="demo-h"><b>Zillow × ChatGPT</b><span class="tag">2025-10 首发</span></div>
+<div class="chat"><div class="bub u">帮我找西雅图 Capitol Hill 附近、月租 3,000 美元以内的两居室</div>
+<div class="card"><div class="map"><i style="left:22%;top:38%">$2,750</i><i style="left:55%;top:24%">$2,980</i><i class="on" style="left:68%;top:62%">$2,600</i><i style="left:35%;top:70%">$2,900</i></div>
+<div class="row"><span>两居 · 1 卫 · 82㎡</span><b>$2,600/月</b></div><div class="btns"><span>查看详情</span><span>只看带停车位</span></div></div></div>
+<p><strong>做得好在哪：</strong>结果直接以可拖动、可缩放的地图呈现，点击房源即可继续追问，无需离开对话。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Instacart × ChatGPT</b><span class="tag">2025-12 上线</span></div>
+<div class="chat"><div class="bub u">这周末 6 个人烤肉，帮我把东西买齐</div>
+<div class="card"><div class="li"><span>牛小排 1.5kg</span><span class="qty">− 1 +</span><b>$38.90</b></div><div class="li"><span>玉米 6 根</span><span class="qty">− 1 +</span><b>$4.50</b></div><div class="li"><span>烧烤酱</span><span class="qty">− 1 +</span><b>$3.99</b></div>
+<div class="row"><span>合计（含配送）</span><b>$52.38</b></div><div class="btns"><span class="pri">确认付款</span><span>换门店</span></div></div></div>
+<p><strong>做得好在哪：</strong>首个支持 Instant Checkout 的 App。购物车可直接修改，确认后在对话内付款，从需求到成交一次完成。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Canva × ChatGPT</b><span class="tag">单月 2,600 万次使用</span></div>
+<div class="chat"><div class="bub u">做一张咖啡店秋季新品的竖版海报</div>
+<div class="card"><div class="thumbs"><i></i><i class="on"></i><i></i></div><div class="btns"><span class="pri">在 Canva 中编辑</span><span>再出一版</span></div></div></div>
+<p><strong>做得好在哪：</strong>对话里只出初稿缩略图，选中后回到 Canva 精修和导出，把 Agent 流量引回自家产品。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>Hex、Amplitude × Claude</b><span class="tag">2026-01 MCP Apps</span></div>
+<div class="chat"><div class="bub u">上周各渠道的转化率怎么变的？</div>
+<div class="card"><div class="seg"><span class="on">7 天</span><span>30 天</span><span>按渠道</span></div><div class="bars"><i style="height:46%"></i><i style="height:58%"></i><i style="height:52%"></i><i style="height:71%"></i><i style="height:64%"></i><i style="height:80%"></i><i style="height:76%"></i></div>
+<div class="row"><span>数据来源：events 表 · 查询可展开</span></div></div></div>
+<p><strong>做得好在哪：</strong>图表可直接切换时间和维度，并标明数据来源，与 TikTok 投放报表的形态最接近。</p>
+</div>
+</div>
+<div class="implication"><strong>对 TT4B 的参考：</strong>投放报表可参考 Hex、Amplitude，做成可交互图表；建计划、调预算可参考 Instacart 的购物车，做成可编辑、可确认的卡片，同时承担写操作的二次确认。</div>
+</div>
+</details>
+<div class="implication"><strong>对 TT4B 的含义：</strong> 广告主在哪个 Agent 里工作，TikTok 就要出现在哪里。报表、计划预览、花费确认都应做成可视化卡片，这也是写操作二次确认的最佳载体。</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t2">下一个：MCP 已成广告平台标配 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t2" aria-label="MCP 已成广告平台标配"><div class="modal-bar"><span class="modal-n">02 / 12</span><b>MCP 已成广告平台标配</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>MCP SDK 月下载量达 9,700 万（2026-05），Claude、ChatGPT、Gemini、Copilot Studio、Cursor 均已原生支持；2025 年 12 月，MCP 移交 Linux 基金会旗下的 Agentic AI Foundation，中立治理打消了平台方的顾虑。</p>
+<figure>
+<figcaption>一年内 7 家上线官方 MCP，3 家支持读写</figcaption>
+<div class="sub">日期以首次公开可用为准，2025 年 10 月至 2026 年 9 月</div>
+<div class="scroll"><svg aria-label="广告平台官方 MCP 发布时间线" id="mcpTimeline" role="img" style="min-width:600px;width:100%;height:auto" viewbox="0 0 760 330"></svg></div>
+<div class="src">来源：Markifact、Leapbuzz、各平台公告</div>
+</figure>
+<ul class="plain">
+<li><strong>MCP 不再是卖点。</strong> 广告主一句话就能对比 Meta 和 TikTok 的 ROAS，平台间的切换成本大幅降低。</li>
+<li><strong>写权限和安全机制成为差异点。</strong> Meta 新建计划一律暂停；Amazon 把多步操作合并为一句指令；Snap 允许按 Agent 分别授权。</li>
+<li><strong>其他平台正陆续开放写权限。</strong> Meta 7 月 16 日正式开放，9 月加入 Partnership Ads；Microsoft、Snap 已公开写权限路线，预计 6–12 个月内普及。</li>
+</ul>
+<div class="implication"><strong>对 TT4B 的含义：</strong> 写操作要覆盖投放全流程、能串成完整任务；用默认暂停、花费上限、二次确认、按 Agent 授权来赢得信任；再用伙伴 Skills 加垂直方案，做竞品没有的工作流。核心指标看写操作占全部调用的比例。</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t3">下一个：竞争焦点从上架转向实际使用 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t3" aria-label="竞争焦点从上架转向实际使用"><div class="modal-bar"><span class="modal-n">03 / 12</span><b>竞争焦点从上架<wbr>转向实际使用</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="tbl"><table>
+<thead><tr><th>Agent 货架</th><th>规模</th><th>发现方式</th></tr></thead>
+<tbody>
+<tr><td>Claude Marketplace</td><td>2,000+ 条目（2026-09 上线）</td><td>申请制上架、人工审核，支持 MCP 与 Skills</td></tr>
+<tr><td>ChatGPT 插件目录</td><td>应用 1,624 个（2026-07）</td><td>以名称检索为主，对话中也会按场景推荐</td></tr>
+<tr><td>WorkBuddy SkillHub</td><td>内置 20+ 技能包</td><td>开箱即用</td></tr>
+</tbody>
+</table></div>
+<h3>与应用商店看似相似，实则有四点关键不同</h3>
+<ol class="num">
+<li><div><strong>工具由 Agent 来挑。</strong> 多数调用由模型根据任务语义匹配工具描述。比的是描述清晰、任务成功率高、响应快。</div></li>
+<li><div><strong>装了也不代表会用。</strong> 同一个 Agent 可同时接入多个广告平台，每次任务重新选择，留存靠每次都把事办成。</div></li>
+<li><div><strong>平台方也在做广告。</strong> ChatGPT、Gemini 自营广告，合作中更要突出差异化价值，并做好多平台布局。</div></li>
+<li><div><strong>分发颗粒度在变细。</strong> 更多调用发生在一个 Skill 或工作流内部。</div></li>
+</ol>
+<p>决定单 Agent MAA 的有三个变量：<strong>入口曝光</strong>（推荐位、默认 prompt、专区、模板）、<strong>授权门槛</strong>（Meta 已压缩到 5–7 分钟、无需 App 审核，是行业标杆）、<strong>首次任务效果</strong>。</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-forms">下一个：Agent 内的六种交互形态 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-forms" aria-label="Agent 内的六种交互形态"><div class="modal-bar"><span class="modal-n">04 / 12</span><b>Agent 内的<wbr>六种交互形态</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+<figure>
+<figcaption>六种形态的分层关系</figcaption>
+<div class="sub">自下而上：先能做，再做好，再做得好看，再方便安装，最后获得曝光</div>
+<div class="stack">
+<div class="layer"><div class="k">分发层<small>专区 · 专家 · Buddy 应用</small></div><div class="d">品牌和行业如何获得曝光</div><div class="e">WorkBuddy 行业专家 140+ 位；Buddy 应用首批 30 多家伙伴；TikTok Agentic Hub</div></div>
+<div class="layer"><div class="k">打包层<small>插件 Plugin</small></div><div class="d">一次安装即获得下面三层</div><div class="e">Claude Marketplace 2,000+ 条目；ChatGPT 插件目录 2026-07 取代应用目录</div></div>
+<div class="layer"><div class="k">界面层<small>Agent 应用（类小程序）</small></div><div class="d">结果怎么展示、花费怎么确认</div><div class="e">ChatGPT 应用 1,624 个；MCP Apps 标准 2026-01 发布</div></div>
+<div class="layer"><div class="k">方法层<small>Skill</small></div><div class="d">按什么步骤和规则执行</div><div class="e">2025-12 成为开放标准，OpenAI、Microsoft、Cursor、Figma 采用</div></div>
+<div class="layer base"><div class="k">执行层<small>MCP 连接器</small></div><div class="d">能连什么、能做什么</div><div class="e">官方 Registry 约 1.88 万个服务；TikTok、Meta、Amazon Ads MCP</div></div>
+</div>
+<div aria-label="一次典型投放任务" class="flow"><span>专区或一句话发起</span><i>→</i><span>专家或 Skill 拆解步骤</span><i>→</i><span>通过 MCP 读写账户</span><i>→</i><span>在应用卡片中预览并确认花费</span></div>
+<div class="src">注：通达信在 WorkBuddy 的入驻，公开报道称为"连接器市场入驻"，未见"专区"这一官方名称。</div>
+</figure>
+<div class="tbl"><table>
+<thead><tr><th>广告工作流</th><th>主要形态</th></tr></thead>
+<tbody>
+<tr><td>看报表</td><td>MCP 只读工具 + 报表 Skill</td></tr>
+<tr><td>诊断（Pixel、素材、投放效果）</td><td>诊断 Skill + MCP</td></tr>
+<tr><td>创意</td><td>创意 Skill 或专家；独立创意 Agent 经 Hub 接入</td></tr>
+<tr><td>建计划、调预算</td><td>MCP 写操作 + 人工审批，用应用卡片确认</td></tr>
+<tr><td>品牌化一站式体验</td><td>专区 / Buddy 应用</td></tr>
+</tbody>
+</table></div>
+<h3>未来 12–18 个月各形态走势 <span class="tag">作者判断</span></h3>
+<div class="trend">
+<div class="tc"><div class="h">Skill<span class="arrow up">▲ 增长最快</span></div><p>将成为长尾供给的主体；同质化严重，高质量 Skill 更稀缺。</p></div>
+<div class="tc"><div class="h">MCP<span class="arrow up">▲ 向官方集中</span></div><p>向官方和品牌维护的远程服务集中；远程服务中已有 17% 失效。</p></div>
+<div class="tc"><div class="h">插件<span class="arrow up">▲ 海外主流</span></div><p>成为海外主流的分发和安装形式，ChatGPT、Claude 都已统一到插件。</p></div>
+<div class="tc"><div class="h">Agent 应用<span class="arrow up">▲ 高价值场景</span></div><p>数量少，但在交易、下单、确认场景占比上升；写操作需要可视化确认。</p></div>
+<div class="tc"><div class="h">专区<span class="arrow fl">◆ 国内为主</span></div><p>国内走类小程序的品牌入口路线，WorkBuddy 已率先落地。</p></div>
+<div class="tc"><div class="h">专家 / GPTs<span class="arrow dn">▼ 萎缩</span></div><p>GPTs 2026-12 退役，Gems 2026-11 起迁移为 Skills；带数据和工具的专家会保留。</p></div>
+</div>
+<div class="implication"><strong>对 TT4B 的含义：</strong> MCP 是底座，必须稳定并由官方维护；Skill 是主要增量投入方向；写操作配合应用卡片做确认；海外以插件上架，国内（WorkBuddy、豆包）做品牌专区或 Buddy 应用；专家形态不单独投入。</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t4">下一个：广告投放与电商交易打通 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-t4" aria-label="广告投放与电商交易打通"><div class="modal-bar"><span class="modal-n">05 / 12</span><b>广告投放与<wbr>电商交易打通</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="thesis">Agent 不只帮广告主买广告，自己也开始卖广告，并直接促成交易。投放、售卖、成交正在同一个对话里完成。</p>
+<p>ChatGPT Ads 上线约 200 天年化收入破 10 亿美元；截至 2026-09-23 已覆盖 63 国，新增 7 个亚洲市场，广告只出现在 Free / Go 套餐并带标识。Google 的 AI Mode 和 Gemini 也在测试广告位。</p>
+<h3>程序化交易的三套协议将分层并存</h3>
+<div class="tbl"><table>
+<thead><tr><th>协议</th><th>推动方</th><th>是什么</th><th>定位</th></tr></thead>
+<tbody>
+<tr><td>OpenRTB</td><td>IAB Tech Lab</td><td>现行实时竞价标准</td><td>底层管道，毫秒级竞价</td></tr>
+<tr><td>AdCP</td><td>Scope3、Yahoo、PubMatic 等（2025-10-15）</td><td>基于 MCP 和 A2A，买卖双方的 Agent 用自然语言议价、下单、看报表</td><td>面向 Agent 的新协议</td></tr>
+<tr><td>AAMP</td><td>IAB Tech Lab（2026-02-26 命名）</td><td>在 OpenRTB、OpenDirect 上加 Agent 接口</td><td>面向 Agent 的改造路线</td></tr>
+</tbody>
+</table></div>
+<p>AdCP 与 AAMP 有 13 项功能重叠，PubMatic、VIOOH 已同时接入两套。判断：未来 2–3 年将分层并存，TikTok 的核心能力需同时支持两套接口。商务侧有 OpenAI 与 Stripe 的 ACP、Google 的 UCP。McKinsey 预测，2030 年由 Agent 促成的美国 B2C 零售交易额约 9,000 亿至 1 万亿美元，全球 3 万亿至 5 万亿美元。</p>
+<figure>
+<figcaption>按"分发价值 × 广告竞争"对 Agent 分级</figcaption>
+<div class="sub">不因 ChatGPT、Gemini 自营广告而回避合作，但对不卖广告的 Agent 投入更深、更稳</div>
+<div class="m2">
+<div class="ax corner"></div><div class="ax">广告竞争低（不卖广告）</div><div class="ax">广告竞争高（自营广告）</div>
+<div class="ax y">分发价值高</div>
+<div class="cell deep"><b>深度投入</b>Claude、Canva、Shopify、Copilot 等，优先深度集成，争取默认调用</div>
+<div class="cell coop"><b>竞合并行</b>ChatGPT、Gemini，要接入，但要守住数据和归因边界</div>
+<div class="ax y">分发价值低</div>
+<div class="cell"><b>标准接入</b>长尾工作流 Agent，用标准 MCP 与 Skill 自助接入</div>
+<div class="cell"><b>观察</b>暂不主动投入</div>
+</div>
+</figure>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-rivals">下一个：竞品布局：多数已开放写入 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-rivals" aria-label="竞品布局：多数已开放写入"><div class="modal-bar"><span class="modal-n">06 / 12</span><b>竞品布局：多数已开放写入</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="note">"开放写入"指经广告主授权后，第三方 Agent 可直接操作账户（建计划、改预算、开停广告），而不只是读数据。竞争重点正转向工作流封装。</p>
+<div class="tbl"><table>
+<thead><tr><th>平台</th><th>1P 自建 Agent</th><th>对 3P 开放</th><th>开放程度</th><th>工作流封装</th></tr></thead>
+<tbody>
+<tr><td>Meta</td><td>Advantage+、Business AI、Muse</td><td>Ads MCP</td><td><span class="tag rw">开放写入</span> 7-16 正式</td><td>工具数量多，封装较少</td></tr>
+<tr><td>Google</td><td>Ask Advisor、AI Max、PMax</td><td>Ads API（读写）、MCP（只读）</td><td><span class="tag">半开放</span> Agent 内执行只在自家产品</td><td>Ask Advisor 内置诊断、建议、执行，不对 3P 开放</td></tr>
+<tr><td>Amazon</td><td>Amazon Ads Agent</td><td>Ads MCP</td><td><span class="tag rw">开放写入</span> 2026-02</td><td>跨国扩投、SP 广告端到端创建，一句话完成</td></tr>
+<tr><td>Microsoft</td><td>Copilot in Microsoft Advertising</td><td>Ads API、Copilot 插件</td><td><span class="tag">半开放</span></td><td>依托 Copilot 分发</td></tr>
+<tr><td>TikTok</td><td>Symphony、Smart+</td><td>TikTok for Business MCP</td><td><span class="tag rw">开放写入</span></td><td>工具已齐全，工作流 Skill 仍有提升空间</td></tr>
+</tbody>
+</table></div>
+<p>Google 的 MCP 只读，在 Agent 里直接执行投放只放在自家的 Ask Advisor 和 Gemini。在 ChatGPT、Claude 等 3P Agent 里能直接投放的平台不多，这是 TikTok 的窗口。</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-cases">下一个：十大标杆案例 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-cases" aria-label="十大标杆案例"><div class="modal-bar"><span class="modal-n">07 / 12</span><b>十大<wbr>标杆案例</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>按用户量、调用量和可归因收入综合排序。多数公司不披露 MCP 单独收入，数字以公司公开口径为准。</p>
+<div class="cases" id="caseGrid"></div>
+<h3>对照案例：ChatGPT 站内直接下单</h3>
+<p>Walmart 披露站内直接下单的转化率只有跳转到自家网站的约 1/3；Etsy 几乎没有成交；Instacart 规模很小。现阶段，"对话里做决策、回自家产品成交"的效果更好。</p>
+<figure class="dm">
+<figcaption>六条共性做法：Canva 一家占了五条</figcaption>
+<div class="sub">实心点表示公开资料中可见该做法</div>
+<div class="tbl" style="margin:0;border:0"><table id="playMatrix"></table></div>
+</figure>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-canva">下一个：Canva 在 ChatGPT 的做法 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-canva" aria-label="Canva 在 ChatGPT 的做法"><div class="modal-bar"><span class="modal-n">08 / 12</span><b>Canva 在 ChatGPT 的做法</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="kpis" style="margin:8px 0 24px">
+<div class="kpi"><b>2,600 万</b><span>2025-10 单月在 ChatGPT 内使用次数</span></div>
+<div class="kpi"><b>前 10</b><span>canva.com 在 ChatGPT 引流域名中的排名</span></div>
+<div class="kpi"><b>1,200 万</b><span>通过 MCP 在各 AI 助手内生成的设计</span></div>
+<div class="kpi"><b>+375%</b><span>成为首个设计 connector 后 Canva GPT 使用量增长</span></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px">
+<div style="min-width:0">
+<h3 style="margin-top:0">每个新入口都是首批</h3>
+<div class="tl">
+<div class="it"><div class="dt">2025-06-26</div>ChatGPT 首个设计类 connector，同时发布 Canva MCP Server</div>
+<div class="it"><div class="dt">2025-10-06</div>ChatGPT Apps 首批 7 家伙伴之一（同批 Booking、Coursera、Expedia、Figma、Spotify、Zillow）</div>
+<div class="it"><div class="dt">2026-01 下旬</div>Brand Kit（Logo、字体、配色）上线 Claude</div>
+<div class="it"><div class="dt">2026-02-05</div>Brand Kit 和分步生成演示文稿上线 ChatGPT</div>
+</div>
+</div>
+<div style="min-width:0">
+<h3 style="margin-top:0">用户路径</h3>
+<div class="flow" style="flex-direction:column;align-items:stretch">
+<span><strong>触发</strong>：用户点名"用 Canva 做海报"，或 ChatGPT 根据上下文主动推荐</span><i style="text-align:center">↓</i>
+<span><strong>授权</strong>：首次 OAuth 授权，之后免配置</span><i style="text-align:center">↓</i>
+<span><strong>预览</strong>：对话中展示多个设计稿供选择</span><i style="text-align:center">↓</i>
+<span><strong>回流</strong>：一键跳到 canva.com 精修、导出、发布</span>
+</div>
+</div>
+</div>
+<h3>拉动使用量的五种交互</h3>
+<p>Canva 在 ChatGPT 里用量做得大，靠的不只是上架早，更在于交互设计：降低第一次使用的门槛，让每次对话都有可见成果，再把用户引回自家产品。以下为示意图，根据 Canva、OpenAI 公开演示重绘，官方演示见 <a href="https://www.canva.com/newsroom/news/" rel="noopener" target="_blank">Canva Newsroom</a> 和 <a href="https://openai.com/index/introducing-apps-in-chatgpt/" rel="noopener" target="_blank">OpenAI 发布页</a>。</p>
+<div class="demos">
+<div class="demo">
+<div class="demo-h"><b>① 不点名也能被调用</b><span class="tag rw">拉新</span></div>
+<div class="chat">
+<div class="bub u">下周六咖啡店开业，帮我做张海报</div>
+<div class="card"><div class="row"><span>ChatGPT 建议使用</span><b>Canva</b></div><div class="btns"><span class="pri">用 Canva 设计</span><span>先不用</span></div></div>
+</div>
+<p><strong>为什么有效：</strong>用户只说需求，ChatGPT 根据上下文主动推荐 Canva。新用户不需要知道 Canva 已接入，也会被带进来。</p>
+<p><strong>TikTok 可借鉴：</strong>工具描述覆盖"推广新品""给店铺引流"等说法，让广告主不点名 TikTok 也能被调起。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>② 第一次就看到成果</b><span class="tag rw">激活</span></div>
+<div class="chat">
+<div class="card"><div class="row"><span>Canva · 已生成 3 个设计</span><b>海报</b></div><div class="thumbs"><i class="on"></i><i></i><i></i></div><div class="btns"><span class="pri">选这一版</span><span>再来几版</span></div></div>
+</div>
+<p><strong>为什么有效：</strong>对话里直接出多版初稿，几秒内看到可用结果，第一次任务的成功率高，用户愿意再来。</p>
+<p><strong>TikTok 可借鉴：</strong>一句话生成 2–3 套 Smart+ 方案预览（素材、预算、预估效果），先给结果，再请广告主确认。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>③ 在对话里接着改</b><span class="tag rw">留存</span></div>
+<div class="chat">
+<div class="bub u">换成竖版，配色用我们的品牌色</div>
+<div class="card"><div class="row"><span>已套用 Brand Kit</span><b>竖版 9:16</b></div><div class="seg"><span>横版</span><span class="on">竖版</span><span>方形</span></div></div>
+</div>
+<p><strong>为什么有效：</strong>Brand Kit（Logo、字体、配色）自动套用，多轮修改都在对话里完成。会话变长，复访增多。</p>
+<p><strong>TikTok 可借鉴：</strong>记住广告主的账户、品牌素材和常用设置，"预算加到 500""换成第二条视频"一句话就能改。</p>
+</div>
+<div class="demo">
+<div class="demo-h"><b>④ 一键回到自家产品</b><span class="tag rw">转化</span></div>
+<div class="chat">
+<div class="card"><div class="row"><span>开业海报 · 竖版</span><b>草稿</b></div><div class="btns"><span class="pri">在 Canva 中编辑</span><span>下载 PNG</span></div></div>
+</div>
+<p><strong>为什么有效：</strong>精修、导出、团队协作都要回 Canva 完成。Agent 带来的流量变成 Canva 自己的活跃用户和付费席位。</p>
+<p><strong>TikTok 可借鉴：</strong>每张卡片都带"在 Ads Manager 中调整"，确认、付款、精调回到 Ads Manager，计入 TikTok 自有的活跃广告主。</p>
+</div>
+</div>
+<div class="demo" style="margin-top:14px">
+<div class="demo-h"><b>⑤ 一次授权，多个 Agent 通用</b><span class="tag rw">扩量</span></div>
+<p>Canva 同一个账户和 Brand Kit 在 ChatGPT、Claude 等多个 Agent 里都能用，通过 MCP 累计在各 AI 助手内生成 1,200 万个设计。用户在哪个 Agent 里工作，Canva 就出现在哪里。</p>
+<p><strong>TikTok 可借鉴：</strong>一次授权后，广告主在 ChatGPT、Claude、豆包等 Agent 里都能直接用 TikTok，免重复配置，MAA 自然累加。</p>
+</div>
+<div class="implication"><strong>对 TT4B 的含义：</strong>MAA 的关键不只在上架数量，更在四个环节：能不能被主动调起、第一次能不能立刻出结果、能不能在对话里接着改、能不能顺畅回到 Ads Manager。建议把这四个环节分别设指标跟踪：调起率、首次任务成功率、多轮使用率、回流率。</div>
+<h3>为什么有效</h3>
+<div class="plays">
+<div class="play"><b>只出初稿</b><p>精修、导出、团队协作都要回到 Canva。</p></div>
+<div class="play"><b>需求高频且人人都有</b><p>做图、做 PPT 是日常需求，调用频次天然就高。</p></div>
+<div class="play"><b>每个新入口都抢首发</b><p>首批伙伴能拿到发布会曝光和默认推荐。</p></div>
+<div class="play"><b>从个人用户延伸到企业</b><p>Brand Kit 把 C 端流量转化为付费团队席位。公司 ARR 40 亿美元、月活 2.65 亿。</p></div>
+</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-analogy">下一个：历史上最像搜索引擎时代 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-analogy" aria-label="历史上最像搜索引擎时代"><div class="modal-bar"><span class="modal-n">09 / 12</span><b>历史上最像<wbr>搜索引擎时代</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p class="thesis">2000—2020 年，Google 靠默认搜索协议拿下入口，再在购物、本地生活、旅行等垂直领域优先展示自家服务。Facebook 开放平台（Zynga）和 Alexa Skills 作为补充参照。</p>
+<div class="tbl"><table>
+<thead><tr><th>相似点</th><th>搜索时代</th><th>今天的 Agent 入口</th></tr></thead>
+<tbody>
+<tr><td>平台既管分发又卖广告，还亲自下场</td><td>Google Shopping 优先自家比价，欧盟罚款 24.2 亿欧元（2024-09 终审维持）</td><td>ChatGPT Ads 上线 6 周收入超 1 亿美元</td></tr>
+<tr><td>由算法决定推荐谁</td><td>SEO 决定排名</td><td>工具描述优化就是新的 SEO</td></tr>
+<tr><td>默认位置价值极高</td><td>Google 2022 年付 Apple 200 亿美元换默认搜索</td><td>首发伙伴、默认推荐、预装连接器</td></tr>
+<tr><td>流量最终要沉淀为自有用户</td><td>Booking 把付费流量转化为会员和 App 用户</td><td>Canva、Shopify 引导用户回自家产品完成交易</td></tr>
+</tbody>
+</table></div>
+<div class="vs">
+<div class="who win"><div class="role">赢家</div><b>Booking</b><p>2018 年单季在 Google 广告花超 10 亿美元；2024 年营销费用 73 亿美元、占收入 31%。顺应平台主导入口的格局，积极采买流量，同时转化为会员、App 用户和直接访问。</p></div>
+<div class="who lose"><div class="role">输家</div><b>Yelp、TripAdvisor</b><p>内容被抓取后，Google 在结果页优先展示自家本地和旅行服务，流量被截留，只能长期通过反垄断诉讼寻求补救。</p></div>
+<div class="who ref"><div class="role">补充参照</div><b>Zynga · Alexa Skills</b><p>Zynga 2011 年占 Facebook 收入 12%，规则一改 FarmVille 月活从 8,000 万跌到 2,000 万。Alexa 技能第二周留存约 3%，69% 的技能评价数为 0–1 条。</p></div>
+</div>
+<figure>
+<figcaption>没有自有用户，平台一改规则就归零</figcaption>
+<div class="sub">FarmVille 月活（百万），Facebook 调整通知与分发规则前后</div>
+<div class="rows" id="zynga"></div>
+<div class="src">来源：Zynga 2011—2012 年报与 SEC 文件</div>
+</figure>
+<h3>成功案例的六条共性</h3>
+<ol class="num">
+<li><div><strong>把调用优先级当指标运营。</strong> 搜索时代赢家专门做 SEO；Canva、Context7 的工具描述清晰、功能聚焦。</div></li>
+<li><div><strong>重金押注默认位置。</strong> Booking 大量买广告；Canva、HubSpot 每轮抢首发；Shopify 直接默认开启。</div></li>
+<li><div><strong>把流量沉淀为自有用户。</strong> Booking 转会员和 App；Canva 回编辑器；Shopify 结账回店铺。</div></li>
+<li><div><strong>不押注单一平台。</strong> Shopify、Canva、HubSpot 同时接入 ChatGPT、Claude、Gemini、Copilot 等多家 Agent；Zynga 只押 Facebook。</div></li>
+<li><div><strong>用公开数据建立信任。</strong> Atlassian、Supabase 公开调用量和效果。</div></li>
+<li><div><strong>先解决曝光，再追求数量。</strong> Alexa 技能多但用户找不到；成功案例先拿推荐位和高频场景。</div></li>
+</ol>
+<details><summary>为何不选其他类比</summary><div>
+<ul class="plain"><li><strong>微信小程序：</strong>靠社交裂变，Agent 里没有这种传播链。</li><li><strong>App Store：</strong>靠用户主动搜索安装，而 Agent 里多数调用由模型自动选择。</li><li><strong>支付网络、header bidding（程序化广告竞价）：</strong>更像协议之争，只能解释局部现象。</li></ul>
+</div></details>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-strategy">下一个：策略主线与四个抓手 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-strategy" aria-label="策略主线与四个抓手"><div class="modal-bar"><span class="modal-n">10 / 12</span><b>策略主线与四个抓手</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<figure>
+<figcaption>三条主线共同拉动 3P Agent 渠道的 MCP MAA</figcaption>
+<div class="sub">MCP MAA = Agent 数 × 单 Agent MAA；增量收入 = Lift ARPA × MAA</div>
+<div class="trend">
+<div class="tc"><div class="h">覆盖<span class="arrow" style="color:var(--accent)">Agent</span></div><p>聚焦头部 11 个 Agent；通用 + 工作流两类并重。<br/>指标：可触达广告主覆盖率</p></div>
+<div class="tc"><div class="h">使用<span class="arrow" style="color:var(--accent)">MCP</span></div><p>从上架走向默认调用；降低授权和首次使用门槛。<br/>指标：曝光率、点击率、授权率</p></div>
+<div class="tc"><div class="h">效果<span class="arrow" style="color:var(--accent)">Skills</span></div><p>高频任务一句话完成；垂直行业一站式工作流。<br/>指标：调用量、写操作占比、留存</p></div>
+</div>
+<div class="layer base" style="margin-top:10px;grid-template-columns:1fr;text-align:center;font-size:14px">底座：分 Agent 度量漏斗 · 权限与花费安全 · 中国出海专项</div>
+</figure>
+<h3>贯穿各方向的四个核心抓手</h3>
+<p class="note">这不是新增任务，而是五个方向共用的方法。资源有限时优先保证这四项，重点看两个指标：分 Agent 的任务成功率、写操作占比。</p>
+<div class="plays">
+<div class="play"><b>1 · 让 Agent 优先调用 TikTok</b><p>工具名称和描述用广告主原话写（"看 TikTok 广告效果""建 Smart+ 计划"）；工具少而精；建一组测试问题，按 Agent 定期测试命中率。</p></div>
+<div class="play"><b>2 · 抢占默认入口</b><p>争取首发合作、starter prompt、模板、行业专区。每个新入口（Claude Marketplace、ChatGPT 插件目录、WorkBuddy Buddy 应用）都争取首批上架。</p></div>
+<div class="play"><b>3 · 一键授权，首次使用即成功</b><p>Meta 已做到 OAuth 登录即用、无需开发者凭证，Amazon 仍限 API 伙伴，这是拉开差距的机会。用 Skills 打包高频任务，首次使用就能出结果。</p></div>
+<div class="play"><b>4 · 用安全机制赢得写操作信任</b><p>新建默认暂停、花费上限、二次确认、按 Agent 授权；写操作要能串成完整任务，而不是零散的单点接口。</p></div>
+</div>
+<h3>五个重点方向</h3>
+<ol class="num">
+<li><div><strong>覆盖：通用与工作流 Agent 并重。</strong> 通用 Agent（ChatGPT、Gemini、Claude、Copilot、豆包）决定覆盖上限，先保证接入；工作流 Agent（Canva、Shopify、Mailchimp、Wix、GoDaddy Airo）意图更明确，优先深度集成。组合示例：Canva 生成素材 → TikTok MCP 一键建 Smart+ 广告 → 在 ChatGPT 或 Claude 看报表调预算。</div></li>
+<li><div><strong>使用：从上架走向默认调用。</strong> 可发现 → 低摩擦授权 → 首次使用成功（如查看昨日花费）→ 形成习惯（每周报表）。</div></li>
+<li><div><strong>效果：用 Skills 把高频任务封装成一句话指令。</strong> 从创建 Smart+ 广告、素材诊断、预算调整、周报四类开始。</div></li>
+<li><div><strong>投入：按边际 MAA 分配资源。</strong> 按"投入后预计新增 MAA ÷ 投入资源"排序，避免平均用力（见下图）。</div></li>
+<li><div><strong>信任：权限与花费安全。</strong> 按 Agent 粒度授权、可随时撤销；预算类写操作设上限和二次确认；操作留痕可查。</div></li>
+</ol>
+<figure>
+<figcaption>单 Agent MAA 漏斗：每个环节都有放大效应</figcaption>
+<div class="sub">示意计算，以 Claude 可触达广告主 80 万（区间下限）为例 <span class="tag est">假设值，仅说明方法</span></div>
+<div class="fun" id="funnel"></div>
+</figure>
+<h3>对 TT4B 的五点启示</h3>
+<ol class="num">
+<li><div><strong>像做 SEO 一样运营 Agent 调用。</strong> 用测试问题集定期测试命中率，据此优化工具描述。</div></li>
+<li><div><strong>争取首发和默认推荐，做到免配置。</strong> 每个新入口都争取首批上架，首次授权后无需任何配置。</div></li>
+<li><div><strong>多平台均衡布局。</strong> 重点深耕相对中立的 Agent（Claude、Kimi、Manus、Perplexity）和豆包，坚持支持开放协议（MCP、Skills）。</div></li>
+<li><div><strong>把用户引回 TikTok Ads Manager。</strong> Agent 生成方案和草稿，确认、付款和精细调整回到 Ads Manager，把 Agent 流量沉淀为自有广告主。</div></li>
+<li><div><strong>公开使用数据。</strong> 参考 Atlassian，定期对外公布 MCP 月活、调用量和效果案例。</div></li>
+</ol>
+<h3>XFN 协同分工</h3>
+<div class="tbl"><table>
+<thead><tr><th>方向</th><th>MPP</th><th>GBM</th><th>PM</th></tr></thead>
+<tbody>
+<tr><td>覆盖</td><td>头部 Agent 合作推进</td><td>区域 Agent 与出海渠道</td><td>接入能力与目录信息</td></tr>
+<tr><td>使用</td><td>联合推广、推荐位</td><td>广告主教育与首用引导</td><td>授权流程与首用体验</td></tr>
+<tr><td>效果</td><td>伙伴侧 Skill 共建</td><td>行业场景与案例</td><td>Skill 设计与效果度量</td></tr>
+<tr><td>信任</td><td>伙伴合规要求</td><td>广告主反馈</td><td>权限与花费安全机制</td></tr>
+</tbody>
+</table></div>
+<div class="implication"><strong>与 Tracker 的关系：</strong> 不新增伙伴名单，而是在 Tracker 现有 P0 / P1 伙伴的推进中增加四个检查项：首发位、免配置、命中率、引流回 Ads Manager。</div>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-china">下一个：中国出海 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-china" aria-label="中国出海"><div class="modal-bar"><span class="modal-n">11 / 12</span><b>中国出海</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p>出海广告主约占全球广告预算的 8%，但常用的 Agent 与海外不同，需要单独制定渠道策略。中国 Agentic 发布预计与 12 月 APAC Partner Summit 同期。</p>
+<figure>
+<figcaption>中国 Agent 可触达的出海广告主</figcaption>
+<div class="sub">单位万；条形为区间，竖线为基准值 <span class="tag est">模型估算，未公开</span></div>
+<div class="rows" id="cn"></div>
+<div class="axis" style="margin-top:6px"><span></span><div class="ticks" id="cnTicks"></div><span></span></div>
+<div class="src">在出海广告主中的覆盖：豆包最高，WorkBuddy 约 22%，Accio Work 约 20%，Kimi 约 11%，扣子约 9%；千问未建模，按豆包月活比例粗估。</div>
+</figure>
+<ul class="plain">
+<li><strong>豆包优先。</strong> 字节自有，打通成本最低，也是出海广告主使用率最高的通用 Agent。</li>
+<li><strong>工作流 Agent 更贴近投放。</strong> WorkBuddy 和 Accio Work 各覆盖约 1/5 的出海商家，日常任务就是选品、做素材和运营。</li>
+<li><strong>配合 12 月发布节奏。</strong> 接入和案例在 APAC Partner Summit 统一发布。</li>
+</ul>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-outlook">下一个：未来 12–18 个月 <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-outlook" aria-label="未来 12–18 个月"><div class="modal-bar"><span class="modal-n">12 / 12</span><b>未来 12–18 个月</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<div class="phases">
+<div class="ph now"><div class="when">2026 Q4</div><div class="what">写权限普及前的窗口期 <span class="tag rw">当前</span></div><ul><li>Google Ask Advisor 扩大开放</li><li>Meta MCP 持续扩充工具</li><li>ChatGPT Ads 继续扩张</li><li>应用货架扩容至数千个</li></ul></div>
+<div class="ph"><div class="when">2027 H1</div><div class="what">从工具到工作流</div><ul><li>写权限成为标配</li><li>Skills 市场成为主要分发渠道</li><li>按 Agent 授权成为采购标配</li><li>平台开始披露使用量</li></ul></div>
+<div class="ph"><div class="when">2027 H2 – 2028 Q1</div><div class="what">Agent 间直接交易</div><ul><li>买方 Agent 直接与平台协商</li><li>Agent 内广告规模化</li><li>跨平台预算自动分配</li><li>交易与广告形成闭环</li></ul></div>
+</div>
+<p class="note" style="margin-top:10px">阶段划分为作者判断。TikTok 的供给优势主要在第一阶段有效，从第二阶段开始拼的是 Skills 和用户习惯。</p>
+<h3>买方 Agent 的三种类型</h3>
+<div class="tbl"><table>
+<thead><tr><th>形态</th><th>代表</th><th>主要用户</th><th>对 TT4B 的意义</th></tr></thead>
+<tbody>
+<tr><td>通用 Agent</td><td>ChatGPT、Gemini、Claude、豆包</td><td>中小广告主</td><td>决定覆盖上限，靠接入和 Skill</td></tr>
+<tr><td>垂直 / 工作流 Agent</td><td>Canva、Shopify、Accio Work</td><td>电商与内容型广告主</td><td>投放意图最强，靠深度集成</td></tr>
+<tr><td>自建 Agent</td><td>WPP 视频 Buyer Agent、大品牌内部 Agent</td><td>代理商与大客户</td><td>预算最大，靠协议兼容（AdCP / AAMP）</td></tr>
+</tbody>
+</table></div>
+<h3>主要不确定性与应对</h3>
+<div class="tbl"><table>
+<thead><tr><th>不确定性</th><th>如果发生</th><th>应对方式</th></tr></thead>
+<tbody>
+<tr><td>通用 Agent 调整对第三方的开放策略</td><td>调用量波动</td><td>深耕中立 Agent 与工作流 Agent</td></tr>
+<tr><td>协议分裂持续</td><td>接入成本上升</td><td>核心能力同时兼容主流协议</td></tr>
+<tr><td>广告主不放心让 Agent 花钱</td><td>写操作占比停滞</td><td>权限分级、预算上限、操作留痕</td></tr>
+<tr><td>平台不披露 Agent 使用量</td><td>难以评估合作效果</td><td>建设分 Agent 度量漏斗</td></tr>
+</tbody>
+</table></div>
+<p>通用 Agent 需要第三方工具持续为用户创造价值。结构化数据、清晰的工具描述和高任务成功率，是在 Agent 推荐和排序中保持优先的关键。</p>
+</div><div class="modal-foot"><button class="next" type="button" data-open="m-t1">下一个：工作正迁移到通用 Agent <span aria-hidden="true">→</span></button></div></dialog>
+<dialog class="modal" id="m-method" aria-label="方法与来源"><div class="modal-bar"><span class="modal-n">附</span><b>方法与来源</b><button class="x" type="button" data-close aria-label="关闭"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div><div class="modal-body">
+
+
+<p><strong>方法。</strong> 以公开资料为主，内部数据仅用于描述 TT4B 现状。整理 2025-10 至 2026-10 各广告平台官方 MCP、自有 Agent 与协议的发布信息，以平台公告或行业媒体为准，日期不一致时取首次公开可用日期。标杆案例按公开披露的用户量、调用量和可归因收入综合排序，未公开的部分不做估算。历史类比从"平台是否兼做广告、选择机制、默认位置价值、赢家如何留住用户"四个维度比较。展望阶段与形态占比趋势为作者判断。</p>
+<p><strong>可触达广告主的估算。</strong> 各 Agent 均未公开其中的广告主数量。以使用 Agent 的活跃数字广告主（约 1,628 万，对应预算约 5,533 亿美元）为分母，按用户规模、企业侧渗透、与中小企业和营销人员的重叠度估算单独覆盖率。千问按其月活与豆包月活的比例粗估。漏斗示意计算使用假设值。</p>
+<p><strong>内部数据口径。</strong> MCP MAA 9.07 万为截至 2026 年 9 月底的团队数据；listing 与已上线 Agent 名单来自团队伙伴跟踪表。</p>
+<p><strong>局限。</strong> 各平台均未公布 MCP 使用量，竞品比较只能基于发布状态与权限。</p>
+<ul class="src-list">
+<li><a href="https://ads.tiktok.com/business/en/blog/tiktok-agentic-hub-ai-agents-skills-mcp" target="_blank" rel="noopener">TikTok Agentic Hub</a></li>
+<li><a href="https://www.markifact.com/blog/state-of-advertising-mcps" target="_blank" rel="noopener">State of Advertising MCPs（Markifact）</a></li>
+<li><a href="https://www.admove.ai/blog/metas-mcp-and-cli-for-advertisers" target="_blank" rel="noopener">Meta MCP 与 CLI（admove）</a></li>
+<li><a href="https://ppc.land/meta-opens-ads-mcp-to-any-app-cutting-integration-code-to-zero/" target="_blank" rel="noopener">Meta 正式开放 Ads MCP（PPC Land）</a></li>
+<li><a href="https://www.marketingdive.com/news/amazon-enables-communication-between-ads-platform-and-ai-agents/811566/" target="_blank" rel="noopener">Amazon Ads MCP（Marketing Dive）</a></li>
+<li><a href="https://about.ads.microsoft.com/en/solutions/technology/mcp-server" target="_blank" rel="noopener">Microsoft Advertising MCP</a></li>
+<li><a href="https://business.google.com/us/accelerate/googlemarketinglive/keynote/" target="_blank" rel="noopener">Google Marketing Live 2026</a></li>
+<li><a href="https://technologychecker.io/blog/chatgpt-statistics" target="_blank" rel="noopener">ChatGPT 统计</a></li>
+<li><a href="https://www.stanventures.com/news/state-of-google-gemini-july-2026-7431/" target="_blank" rel="noopener">Gemini 统计</a></li>
+<li><a href="https://www.bleepingcomputer.com/news/artificial-intelligence/anthropic-turns-claude-into-an-ai-marketplace-with-2-000-plus-plugins-and-connectors/" target="_blank" rel="noopener">Claude Marketplace</a></li>
+<li><a href="https://www.digitalapplied.com/blog/mcp-adoption-statistics-2026-model-context-protocol" target="_blank" rel="noopener">MCP 采用数据（Digital Applied）</a></li>
+<li><a href="https://ppc.land/openai-gains-7-asian-markets-for-chatgpt-ads-passing-60-countries/" target="_blank" rel="noopener">ChatGPT Ads 63 国（PPC Land）</a></li>
+<li><a href="https://www.forbes.com/sites/gabrielalinzainescu/2026/08/31/openais-chatgpt-ads-hit-1-billion-run-rate-in-just-200-days/" target="_blank" rel="noopener">ChatGPT Ads 10 亿美元年化（Forbes）</a></li>
+<li><a href="https://digiday.com/media-buying/wtf-ad-context-protocol/" target="_blank" rel="noopener">AdCP（Digiday）</a></li>
+<li><a href="https://iabtechlab.com/navigating-the-agentic-frontier-the-iab-tech-lab-2026-roadmap/" target="_blank" rel="noopener">IAB Tech Lab 2026 Roadmap</a></li>
+<li><a href="https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants" target="_blank" rel="noopener">McKinsey：The Agentic Commerce Opportunity</a></li>
+<li><a href="https://www.forbes.com/sites/rogerdooley/2026/02/11/by-years-end-4-in-5-small-businesses-will-use-ai-marketing-tools/" target="_blank" rel="noopener">Constant Contact 调研（Forbes）</a></li>
+<li><a href="https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025" target="_blank" rel="noopener">Gartner 任务型 Agent 预测</a></li>
+<li><a href="https://chainstoreage.com/instacart-launches-app-end-end-shopping-chatgpt" target="_blank" rel="noopener">Instacart ChatGPT App 与 Instant Checkout</a></li>
+<li><a href="https://claude.com/blog/interactive-tools-in-claude" target="_blank" rel="noopener">Claude 交互式连接器与 MCP Apps</a></li>
+<li><a href="https://techcrunch.com/2025/10/06/openai-launches-apps-inside-of-chatgpt/" target="_blank" rel="noopener">TechCrunch：ChatGPT 内 Apps 上线</a></li>
+<li><a href="https://dataconomy.com/2026/02/19/canva-is-using-chatgpt-to-drive-millions-of-new-design-projects/" target="_blank" rel="noopener">Canva in ChatGPT（Dataconomy）</a></li>
+<li><a href="https://openai.com/business/guides-and-resources/the-state-of-enterprise-ai-2025-report/" target="_blank" rel="noopener">OpenAI《2025 企业 AI 报告》</a></li>
+<li><a href="https://www.163.com/dy/article/L3FTIOLG0519U3I5.html" target="_blank" rel="noopener">QuestMobile AI 应用月活（网易）</a></li>
+<li><a href="https://finance.sina.com.cn/roll/2026-07-23/doc-iniiufvh7741606.shtml" target="_blank" rel="noopener">WorkBuddy（新浪财经）</a></li>
+<li><a href="https://supplier.alibaba.com/us/news/PX002DLAW.htm" target="_blank" rel="noopener">Accio Work（阿里巴巴国际站）</a></li>
+<li>Shopify 2026 Q1、Q2 财报电话会；Agentic Storefronts 公告（2026-03）</li>
+<li>Atlassian Rovo MCP 官方博客与数据披露（2026）</li>
+<li>Supabase CEO 公开访谈与融资公告（2026）；Stripe Sessions 2026、ACP 公告</li>
+<li>欧盟委员会 Google Shopping 案判决；美国司法部诉 Google 案庭审材料</li>
+<li>Booking Holdings 年报（2018、2024）；Zynga 2011—2012 年报与 SEC 文件</li>
+<li>Alexa Skills 留存研究（Voicebot、VoiceLabs）；WSJ 2022 Amazon 设备部门报道</li>
+</ul>
+<footer>内部对齐材料，仅供 XFN 讨论。标注"估算"的数字为模型或作者估算，非平台公开数据。</footer>
+</div></dialog>
+<script>
+(function(){
+  /* reach range bars */
+  function ranges(id, ticksId, data, max, step){
+    var el=document.getElementById(id); if(!el) return;
+    el.innerHTML=data.map(function(d){
+      var lo=d[1]/max*100, hi=d[2]/max*100, base=d[3]!=null?d[3]/max*100:null;
+      var bar = d[1]===d[2] ? '' : '<div class="rng" style="left:'+lo+'%;width:'+Math.max(hi-lo,0.6)+'%"></div>';
+      var pt = base!=null ? '<div class="pt" style="left:calc('+base+'% - 1px)"></div>' : '';
+      return '<div class="rrow"><span>'+d[0]+'</span><div class="track">'+bar+pt+'</div><span class="v">'+d[4]+'</span></div>';
+    }).join('');
+    var t=document.getElementById(ticksId), s='';
+    for(var v=0; v<=max; v+=step){ s+='<span style="left:'+(v/max*100)+'%">'+v+'</span>'; }
+    t.innerHTML=s;
+  }
+  ranges('reach','reachTicks',[
+    ['ChatGPT',520,830,null,'520–830'],
+    ['Canva',360,670,null,'360–670'],
+    ['Gemini',130,360,null,'130–360'],
+    ['Shopify',160,290,null,'160–290'],
+    ['Claude',80,260,null,'80–260'],
+    ['豆包',18,54,null,'18–54'],
+    ['WorkBuddy',23,23,23,'约 23']
+  ],900,150);
+  ranges('cn','cnTicks',[
+    ['豆包',18,54,null,'18–54'],
+    ['WorkBuddy',23,23,23,'约 23'],
+    ['Accio Work',18,18,18,'约 18'],
+    ['千问',10,20,null,'10–20'],
+    ['Kimi',10,10,10,'约 10'],
+    ['扣子 Coze',8,8,8,'约 8']
+  ],60,10);
+
+  /* Zynga */
+  var z=document.getElementById('zynga');
+  if(z){ z.innerHTML=[['调整前',80],['调整后',20]].map(function(d){
+    return '<div class="rrow"><span>'+d[0]+'</span><div class="track" style="height:22px"><div class="rng" style="left:0;width:'+(d[1]/80*100)+'%;background:'+(d[1]<50?'var(--hot)':'var(--accent)')+'"></div></div><span class="v">'+d[1]+' M</span></div>';
+  }).join(''); }
+
+  /* MCP timeline SVG */
+  var svg=document.getElementById('mcpTimeline');
+  if(svg){
+    var rows=[['Google Ads','2025-10-07',0,'只读 · 开源'],['Amazon Ads','2026-02-02',1,'读写 · 开放 beta'],['Meta Ads','2026-04-29',1,'读写 · 7 月正式开放'],['Microsoft Ads','2026-06-17',0,'只读 · 试点'],['Pinterest Ads','2026-06-17',0,'只读 · alpha'],['TikTok for Business','2026-06-30',1,'读写 · Agentic Hub'],['Snapchat Ads','2026-08-03',0,'只读 · 上线']];
+    var t=function(d){return Date.parse(d)/864e5}, lo=t('2025-10-01'), hi=t('2026-09-30');
+    var X=function(d){return 170+(t(d)-lo)/(hi-lo)*420};
+    var s='<g font-size="11.5"><circle cx="20" cy="16" r="6" fill="var(--accent)"/><text x="32" y="20" fill="var(--ink)">可读写（可建计划、改预算）</text><circle cx="220" cy="16" r="6" fill="var(--bar)"/><text x="232" y="20" fill="var(--ink)">只读（报表与诊断）</text></g>';
+    for(var i=0;i<12;i++){var m=(9+i)%12+1, y=2025+Math.floor((9+i)/12), d=y+'-'+String(m).padStart(2,'0')+'-01', x=X(d);
+      s+='<line x1="'+x+'" x2="'+x+'" y1="54" y2="306" stroke="var(--line)"/>';
+      if(i%2===0) s+='<text x="'+x+'" y="48" text-anchor="middle" font-size="11" fill="var(--muted)">'+String(y).slice(2)+'.'+m+'</text>';}
+    rows.forEach(function(r,i){var y=80+34*i, x=X(r[1]), c=r[2]?'var(--accent)':'var(--bar)';
+      var md=r[1].split('-');
+      s+='<text x="12" y="'+(y+4)+'" font-size="13" fill="var(--ink)"'+(r[0].indexOf('TikTok')===0?' font-weight="700"':'')+'>'+r[0]+'</text>';
+      s+='<line x1="170" x2="'+x+'" y1="'+y+'" y2="'+y+'" stroke="var(--line)"/>';
+      s+='<circle cx="'+x+'" cy="'+y+'" r="7" fill="'+c+'"/>';
+      var lbl=md[0]+'.'+Number(md[1])+'.'+Number(md[2])+' · '+r[3];
+      var anchor = x>540 ? 'end' : 'start', tx = x>540 ? x-14 : x+14;
+      s+='<text x="'+tx+'" y="'+(y+4)+'" text-anchor="'+anchor+'" font-size="11.5" fill="'+(r[2]?'var(--ink)':'var(--muted)')+'">'+lbl+'</text>';
+    });
+    svg.innerHTML=s;
+  }
+
+  /* cases */
+  var cases=[
+    ['1','Shopify','约 13×','2026 Q1 AI 搜索带来的订单同比','Q2 AI 流量和订单约为去年同期 3 倍；AI 渠道新买家转化率是传统渠道 2 倍；Catalog 商品超 10 亿','默认为所有商家开启，一次接入多端分发，交易留在自有体系',0],
+    ['2','Canva','2,600 万次','2025-10 单月在 ChatGPT 内使用','进入 ChatGPT 引流域名前 10；LLM 引流占总流量两位数百分比；累计生成 1,200 万个设计','每个新入口都抢首发；对话里只出初稿，引导用户回 Canva 精修',1],
+    ['3','Atlassian Rovo MCP','500 万+','每个工作日 MCP 调用','月活超 100 万；约 1/3 调用是写操作；44% 用户不在软件团队','官方远程 MCP，沿用原有权限体系；公开调用量和效果数据',0],
+    ['4','Supabase','60%','可测量的新数据库由 Agent 创建','CEO 估计实际约 90%；注册开发者从 650 万增至 1,000 万','成为 AI 建站工具的默认后端',0],
+    ['5','Stripe','780 万','商户的结账页可供 Agent 使用','Stripe CLI 70% 的 API 请求来自 Agent','通过 ACP 协议卡位支付这一必经环节',0],
+    ['6','HubSpot','+250%','ChatGPT CRM connector 周活同比','ChatGPT 第一个 CRM connector；已在 TikTok Agentic Hub 上架 Skills','抢首发 + 与 OpenAI 联合推广 + 多平台铺开',0],
+    ['7','Context7（Upstash）','第 1','MCP.Directory 1,864 个服务中排名','浏览量约为第 2 名的 2 倍（2026-03）','只解决"查最新文档"这一个高频痛点',0],
+    ['8','Playwright / GitHub MCP','第 2 / 第 7','同榜排名','MCP SDK 2026-05 月下载 9,700 万次','官方维护，在开发工具里成为默认推荐',0],
+    ['9','Expedia / Booking','首批','2025-10 ChatGPT Apps 首发伙伴','Expedia 称 AI 渠道"规模尚小但前景好"，未披露数字','对话里展示比价卡片，预订跳回自家网站',0],
+    ['10','广告平台同行','—','未公布用户数','Meta OAuth 登录即用、可读写；Amazon 只对 API 伙伴开放','直接竞品，差异在接入门槛',0]
+  ];
+  var g=document.getElementById('caseGrid');
+  if(g){ g.innerHTML=cases.map(function(c){
+    return '<article class="case'+(c[6]?' feat':'')+'"><div class="top"><span class="rk">#'+c[0]+'</span><span class="nm">'+c[1]+'</span></div><div class="big">'+c[2]+'<small>'+c[3]+'</small></div><p>'+c[4]+'</p><p class="how"><strong>做法：</strong>'+c[5]+'</p></article>';
+  }).join(''); }
+
+  /* playbook matrix */
+  var cols=['Shopify','Canva','Atlassian','Supabase','Stripe','HubSpot','Context7','Booking'];
+  var plays=[
+    ['每个新入口都抢首发',[0,1,0,0,0,1,0,1]],
+    ['OAuth 一键授权，免配置',[0,1,1,0,0,0,0,0]],
+    ['工具少而精，聚焦一个高频任务',[0,1,0,0,0,0,1,0]],
+    ['只出初稿，引导回自家产品完成',[1,1,0,0,0,0,0,1]],
+    ['数据结构化，便于 Agent 理解',[1,0,0,0,1,0,0,0]],
+    ['公开披露使用数据',[0,1,1,1,0,0,0,0]]
+  ];
+  var pm=document.getElementById('playMatrix');
+  if(pm){
+    var h='<thead><tr><th>做法</th>'+cols.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr></thead><tbody>';
+    plays.forEach(function(p){ h+='<tr><td>'+p[0]+'</td>'+p[1].map(function(v,i){return '<td><span class="dot'+(v?'':' o')+'" role="img" aria-label="'+cols[i]+(v?' 有':' 无')+'"></span></td>'}).join('')+'</tr>'; });
+    pm.innerHTML=h+'</tbody>';
+  }
+
+  /* funnel */
+  var f=document.getElementById('funnel');
+  if(f){
+    var steps=[['可触达',1],['曝光 30%',.3],['点击 20%',.2],['授权 50%',.5],['调用 60%',.6],['留存 50%',.5]];
+    var v=800000, out=[];
+    steps.forEach(function(s,i){ v = i===0 ? 800000 : v*s[1]; out.push([s[0],v]); });
+    f.innerHTML=out.map(function(o){
+      var w=Math.max(Math.sqrt(o[1]/800000)*100,0.8);
+      return '<div class="fs"><span>'+o[0]+'</span><div class="bar" style="width:'+w+'%"></div><span class="v">'+Math.round(o[1]).toLocaleString('en-US')+'</span></div>';
+    }).join('') + '<p class="note" style="margin-top:6px">条形宽度按平方根缩放，便于看清后几步；最终单 Agent MAA 约 7,200。</p>';
+  }
+
+  /* rail highlight */
+  try{
+    var links=[].slice.call(document.querySelectorAll('.rail a'));
+    var map={}; links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a});
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('on')}); var a=map[e.target.id]; if(a){a.classList.add('on'); if(window.innerWidth<=960){ var ol=a.closest('ol'); ol.scrollLeft=a.offsetLeft-ol.clientWidth/2+a.offsetWidth/2; }} } });
+    },{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s)});
+  }catch(e){}
+})();
+</script><script>
+(function(){
+  var cur=null;
+  function open(id){var d=document.getElementById(id);if(!d)return;if(cur&&cur!==d&&cur.open)cur.close();try{d.showModal()}catch(e){d.setAttribute('open','')}d.scrollTop=0;cur=d;window.dispatchEvent(new Event('resize'))}
+  document.querySelectorAll('[data-open]').forEach(function(b){b.addEventListener('click',function(){open(b.getAttribute('data-open'))})});
+  document.querySelectorAll('dialog.modal').forEach(function(d){
+    d.addEventListener('click',function(e){if(e.target===d)d.close()});
+    d.querySelectorAll('[data-close]').forEach(function(x){x.addEventListener('click',function(){d.close()})});
+  });
+  var h=(location.hash||'').slice(1);if(h&&document.getElementById('m-'+h))open('m-'+h);
+})();
+</script>
+
+</body>
+</html>
